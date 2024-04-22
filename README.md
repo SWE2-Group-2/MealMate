@@ -1,4 +1,10 @@
 # MealMate
+
+- [MealMate](#mealmate)
+  - [Hardware-Voraussetzungen](#hardware-voraussetzungen)
+  - [Inbetriebnahme des Vaadin-Server](#inbetriebnahme-des-vaadin-server)
+  - [Aufbau der Datenbank](#aufbau-der-datenbank)
+
 ![logo](doc_img/logo.jpg)
 > MealMate erleichter den Bestellprozess für Benutzer und Restaurantbesitzer. Mit dieser Applikation können Restaurants ihre Speisekarte erstellen und bearbeiten und dem Kund:innen zur verfügungsellen. Die Benutzer:innen können wiederum aus den Speisekarten auswählen und Bestellungen an das Restaurant übermitteln.
 
