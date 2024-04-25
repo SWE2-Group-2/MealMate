@@ -1,40 +1,93 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:java:.
 version: 2.1
+orbs:
+  gcp-gcr: circleci/gcp-gcr@0.15.0
+  cloudrun: circleci/gcp-cloud-run@1.0.1
+  gcp-cli: circleci/gcp-cli@2.1
+executors:
+
+  gcloud-executor:
+    docker:
+      - image: google/cloud-sdk
+  machine-executor:
+    machine: true
 jobs:
-  test-java:
-    docker:
-      - image: cimg/openjdk:17.0
-    steps:
-      - checkout
-      - run:
-          name: Calculate cache key
-          command: |-
-            find . -name 'pom.xml' -o -name 'gradlew*' -o -name '*.gradle*' | \
-                    sort | xargs cat > /tmp/CIRCLECI_CACHE_KEY
-      - restore_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
-      - run:
-          command: mvn verify
-      - store_test_results:
-          path: target/surefire-reports
-      - save_cache:
-          key: cache-{{ checksum "/tmp/CIRCLECI_CACHE_KEY" }}
-          paths:
-            - ~/.m2/repository
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
-      - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+    build:
+        docker:
+            - image: maven:3.8.1-openjdk-17-slim
+        environment:
+          MAVEN_CLI_OPTS: "--batch-mode"
+        steps:
+            - checkout
+            - run: mvn $MAVEN_CLI_OPTS clean package -Pproduction -e
+            - store_artifacts:
+                path: target
+                destination: target
+                
+    test:
+        docker:
+            - image: maven:3.8.1-openjdk-17-slim
+        steps:
+            - checkout
+            - run: mvn test -e
+            - store_artifacts:
+                path: reports
+                destination: reports   
+         
+    build_push_image_gcr:
+            
+        description: Build docker image and push to gcr registry
+        executor: gcp-gcr/default
+        machine:
+          image: ubuntu-2004:202010-01
+        steps:
+          - checkout
+          
+          - run:
+              name: Build app binary and Docker image
+              command: |
+                echo 'export PATH=~$PATH:~/.local/bin' >> $BASH_ENV
+                echo ${GCP_PROJECT_KEY} | base64 --decode --ignore-garbage > $HOME/gcloud-service-key.json
+                echo 'export GOOGLE_CLOUD_KEYS=$(cat $HOME/gcloud-service-key.json)' >> $BASH_ENV
+                echo 'export TAG=$CIRCLE_SHA1' >> $BASH_ENV                 
+          
+          - gcp-gcr/gcr-auth
+          
+          - gcp-gcr/build-image:
+              dockerfile: Dockerfile
+              google-project-id: GOOGLE_PROJECT_ID
+              image: $CIRCLE_WORKFLOW_ID
+              registry-url: "gcr.io"
+              tag: "latest"              
+
+          - gcp-gcr/push-image:
+              google-project-id: GOOGLE_PROJECT_ID
+              image: $CIRCLE_WORKFLOW_ID
+              registry-url: "gcr.io"
+              tag: "latest"
+
+    gcp_cloudrun_deploy:
+        description: Deploy using cloud run
+        executor: machine-executor
+        steps:
+          - cloudrun/init
+          - cloudrun/deploy:                            
+              platform: 'managed'
+              image: 'gcr.io/$GOOGLE_PROJECT_ID/$CIRCLE_WORKFLOW_ID'
+              service-name: 'vaadin-ui-service'
+              region: 'europe-west1'
+              unauthenticated: true
+
 workflows:
-  build-and-test:
+  version: 2
+  workflow:
     jobs:
-      - test-java
-    # - deploy:
-    #     requires:
-    #       - test-java
+    - build
+    - test:
+          requires:
+            - build
+    - build_push_image_gcr:
+          requires:
+            - build
+    - gcp_cloudrun_deploy:
+          requires:
+            - build_push_image_gcr
