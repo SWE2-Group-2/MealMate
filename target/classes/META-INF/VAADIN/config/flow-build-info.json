@@ -1,0 +1,17 @@
+{
+  "productionMode": false,
+  "eagerServerLoad": false,
+  "npmFolder": "C:\\Users\\rolan\\OneDrive\\Dokumente\\Ausbildung\\MCI\\SWE2\\MealMate\\MealMate",
+  "node.version": "v20.11.1",
+  "node.download.root": "https://nodejs.org/dist/",
+  "frontendFolder": "C:\\Users\\rolan\\OneDrive\\Dokumente\\Ausbildung\\MCI\\SWE2\\MealMate\\MealMate\\frontend",
+  "connect.javaSourceFolder": "C:\\Users\\rolan\\OneDrive\\Dokumente\\Ausbildung\\MCI\\SWE2\\MealMate\\MealMate\\src\\main\\java",
+  "javaResourceFolder": "C:\\Users\\rolan\\OneDrive\\Dokumente\\Ausbildung\\MCI\\SWE2\\MealMate\\MealMate\\src\\main\\resources",
+  "connect.applicationProperties": "C:\\Users\\rolan\\OneDrive\\Dokumente\\Ausbildung\\MCI\\SWE2\\MealMate\\MealMate\\src\\main\\resources\\application.properties",
+  "connect.openApiFile": "C:\\Users\\rolan\\OneDrive\\Dokumente\\Ausbildung\\MCI\\SWE2\\MealMate\\MealMate\\target\\generated-resources\\openapi.json",
+  "project.frontend.generated": "C:\\Users\\rolan\\OneDrive\\Dokumente\\Ausbildung\\MCI\\SWE2\\MealMate\\MealMate\\frontend\\generated",
+  "pnpm.enable": false,
+  "bun.enable": false,
+  "require.home.node": false,
+  "build.folder": "target"
+}

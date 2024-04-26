@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "C:/Users/rolan/OneDrive/Dokumente/Ausbildung/MCI/SWE2/MealMate/MealMate/frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "C:/Users/rolan/OneDrive/Dokumente/Ausbildung/MCI/SWE2/MealMate/MealMate/frontend/generated/jar-resources",
+  "staticOutput": "target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "target/classes/META-INF/VAADIN/webapp/../config/",
+  "frontendBundleOutput": "target/classes/META-INF/VAADIN/webapp/",
+  "devBundleOutput": "C:/Users/rolan/OneDrive/Dokumente/Ausbildung/MCI/SWE2/MealMate/MealMate/target/dev-bundle/webapp",
+  "devBundleStatsOutput": "C:/Users/rolan/OneDrive/Dokumente/Ausbildung/MCI/SWE2/MealMate/MealMate/target/dev-bundle/config",
+  "jarResourcesFolder": "C:/Users/rolan/OneDrive/Dokumente/Ausbildung/MCI/SWE2/MealMate/MealMate/frontend/generated/jar-resources",
+  "themeName": "",
+  "clientServiceWorkerSource": "C:\\Users\\rolan\\OneDrive\\Dokumente\\Ausbildung\\MCI\\SWE2\\MealMate\\MealMate\\target\\sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
