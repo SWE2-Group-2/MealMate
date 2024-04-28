@@ -49,7 +49,7 @@ public class AccounterstellenView extends Composite<VerticalLayout> {
         textField2.setLabel("Nachname");
         emailField.setLabel("E-Mail Adresse");
         layoutColumn3.setHeightFull();
-        formLayout2Col.setFlexGrow(1.0, layoutColumn3);
+        //formLayout2Col.setFlexGrow(1.0, layoutColumn3);
         layoutColumn3.setWidth("100%");
         layoutColumn3.getStyle().set("flex-grow", "1");
         passwordField.setLabel("Passwort");

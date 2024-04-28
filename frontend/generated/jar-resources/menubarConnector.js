@@ -60,27 +60,14 @@ import './contextMenuConnector.js';
           return;
         }
 
-        if (!menubar._container) {
-          // Menu-bar defers first buttons render to avoid re-layout
-          // See https://github.com/vaadin/web-components/issues/7271
-          queueMicrotask(() => menubar.$connector.generateItems(nodeId));
-          return;
-        }
-
         if (nodeId) {
           menubar.__generatedItems = window.Vaadin.Flow.contextMenuConnector.generateItemsTree(appId, nodeId);
         }
 
         let items = menubar.__generatedItems || [];
 
-        items.forEach((item) => {
-          // Propagate disabled state from items to parent buttons
-          item.disabled = item.component.disabled;
-
-          // Saving item to component because `_item` can be reassigned to a new value
-          // when the component goes to the overflow menu
-          item.component._rootItem = item;
-        });
+        // Propagate disabled state from items to parent buttons
+        items.forEach((item) => (item.disabled = item.component.disabled));
 
         // Observe for hidden and disabled attributes in case they are changed by Flow.
         // When a change occurs, the observer will re-generate items on top of the existing tree
@@ -116,11 +103,9 @@ import './contextMenuConnector.js';
     };
   }
 
-  function setClassName(component) {
-    const item = component._rootItem || component._item;
-
-    if (item) {
-      item.className = component.className;
+  function setClassName (component) {
+    if (component._item) {
+      component._item.className = component.className;
     }
   }
 

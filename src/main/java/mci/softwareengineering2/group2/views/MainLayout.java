@@ -4,7 +4,6 @@ import mci.softwareengineering2.group2.data.User;
 import mci.softwareengineering2.group2.security.AuthenticatedUser;
 import mci.softwareengineering2.group2.views.accounterstellen.AccounterstellenView;
 import mci.softwareengineering2.group2.views.bestellungen.BestellungenView;
-import mci.softwareengineering2.group2.views.mealmate.MealMateView;
 import mci.softwareengineering2.group2.views.speisekarte.SpeisekarteView;
 import mci.softwareengineering2.group2.views.warenkorb.WarenkorbView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -72,10 +71,6 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        if (accessChecker.hasAccess(MealMateView.class)) {
-            nav.addItem(new SideNavItem("MealMate", MealMateView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
-
-        }
         if (accessChecker.hasAccess(AccounterstellenView.class)) {
             nav.addItem(
                     new SideNavItem("Account erstellen", AccounterstellenView.class, LineAwesomeIcon.USER.create()));
