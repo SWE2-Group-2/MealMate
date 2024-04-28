@@ -1,5 +1,6 @@
-package mci.softwareengineering2.group2.views.checkoutform;
+package mci.softwareengineering2.group2.views.warenkorb;
 
+import mci.softwareengineering2.group2.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -32,14 +33,15 @@ import com.vaadin.flow.theme.lumo.LumoUtility.MaxWidth;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.Position;
 import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
+import jakarta.annotation.security.RolesAllowed;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import mci.softwareengineering2.group2.views.MainLayout;
 
-@PageTitle("Checkout Form")
+@PageTitle("Warenkorb")
 @Route(value = "checkout-form", layout = MainLayout.class)
-public class CheckoutFormView extends Div {
+@RolesAllowed("USER")
+public class WarenkorbView extends Div {
 
     private static final Set<String> states = new LinkedHashSet<>();
     private static final Set<String> countries = new LinkedHashSet<>();
@@ -90,8 +92,8 @@ public class CheckoutFormView extends Div {
                 "Zimbabwe"));
     }
 
-    public CheckoutFormView() {
-        addClassNames("checkout-form-view");
+    public WarenkorbView() {
+        addClassNames("warenkorb-view");
         addClassNames(Display.FLEX, FlexDirection.COLUMN, Height.FULL);
 
         Main content = new Main();
