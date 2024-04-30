@@ -20,7 +20,7 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 
 @PageTitle("Account erstellen")
-@Route(value = "person-form", layout = MainLayout.class)
+@Route(value = "person-form")
 @AnonymousAllowed
 @Uses(Icon.class)
 public class AccounterstellenView extends Composite<VerticalLayout> {

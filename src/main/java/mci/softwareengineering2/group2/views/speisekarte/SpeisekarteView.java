@@ -20,9 +20,11 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 
+import jakarta.annotation.security.PermitAll;
+
 @PageTitle("Speisekarte")
-@Route(value = "speisekarte", layout = MainLayout.class)
-@AnonymousAllowed
+@Route(value = "speisekarte")
+@PermitAll
 @Uses(Icon.class)
 public class SpeisekarteView extends Composite<VerticalLayout> {
 

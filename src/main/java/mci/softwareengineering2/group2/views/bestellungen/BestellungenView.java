@@ -37,7 +37,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 
 @PageTitle("Bestellungen")
-@Route(value = "grid-with-filters", layout = MainLayout.class)
+@Route(value = "grid-with-filters")
 @RolesAllowed("ADMIN")
 @Uses(Icon.class)
 public class BestellungenView extends Div {

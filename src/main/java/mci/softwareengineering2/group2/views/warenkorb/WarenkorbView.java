@@ -39,7 +39,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @PageTitle("Warenkorb")
-@Route(value = "checkout-form", layout = MainLayout.class)
+@Route(value = "checkout-form")
 @RolesAllowed("USER")
 public class WarenkorbView extends Div {
 

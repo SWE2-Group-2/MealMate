@@ -25,3 +25,10 @@ replay_pid*
 
 # vscode Folder
 .vscode/
+
+# target an generated folders
+target/
+frontend/generated
+
+# db
+*.db
