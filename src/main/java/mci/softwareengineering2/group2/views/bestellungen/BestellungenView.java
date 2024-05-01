@@ -2,7 +2,6 @@ package mci.softwareengineering2.group2.views.bestellungen;
 
 import mci.softwareengineering2.group2.data.SamplePerson;
 import mci.softwareengineering2.group2.services.SamplePersonService;
-import mci.softwareengineering2.group2.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;

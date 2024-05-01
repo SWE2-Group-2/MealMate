@@ -9,6 +9,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
+
+import java.util.Arrays;
 import java.util.Set;
 
 @Entity
@@ -16,7 +18,9 @@ import java.util.Set;
 public class User extends AbstractEntity {
 
     private String username;
-    private String name;
+    private String firstName;
+    private String lastName;
+    private String email;
     @JsonIgnore
     private String hashedPassword;
     @Enumerated(EnumType.STRING)
@@ -32,11 +36,11 @@ public class User extends AbstractEntity {
     public void setUsername(String username) {
         this.username = username;
     }
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String name) {
+        this.firstName = name;
     }
     public String getHashedPassword() {
         return hashedPassword;
@@ -56,5 +60,23 @@ public class User extends AbstractEntity {
     public void setProfilePicture(byte[] profilePicture) {
         this.profilePicture = profilePicture;
     }
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
+    @Override
+    public String toString() {
+        return "User [username=" + username + ", firstName=" + firstName + ", lastName=" + lastName
+                + ", hashedPassword=" + hashedPassword + ", roles=" + roles + ", profilePicture="
+                + Arrays.toString(profilePicture) + "]";
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

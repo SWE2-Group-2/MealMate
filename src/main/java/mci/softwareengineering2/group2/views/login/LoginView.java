@@ -1,6 +1,8 @@
 package mci.softwareengineering2.group2.views.login;
 
 import mci.softwareengineering2.group2.security.AuthenticatedUser;
+import mci.softwareengineering2.group2.views.accountmanagement.AccounterstellenView;
+
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -25,11 +27,20 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
         i18n.getHeader().setTitle("MealMate");
-        i18n.getHeader().setDescription("Login using user/user or admin/admin");
+        i18n.getHeader().setDescription("Please enter credentials");
         i18n.setAdditionalInformation(null);
+        
+
+        LoginI18n.Form i18nForm = i18n.getForm();
+        i18nForm.setForgotPassword("Sign in");
+        addForgotPasswordListener(event -> {
+            getUI().ifPresent(ui -> ui.navigate(AccounterstellenView.class));
+        });
+        i18n.setForm(i18nForm);
+
         setI18n(i18n);
 
-        setForgotPasswordButtonVisible(false);
+        setForgotPasswordButtonVisible(true);
         setOpened(true);
     }
 

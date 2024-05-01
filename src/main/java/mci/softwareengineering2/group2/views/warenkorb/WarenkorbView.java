@@ -1,6 +1,5 @@
 package mci.softwareengineering2.group2.views.warenkorb;
 
-import mci.softwareengineering2.group2.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
