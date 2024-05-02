@@ -1,7 +1,8 @@
 package mci.softwareengineering2.group2.views.login;
 
 import mci.softwareengineering2.group2.security.AuthenticatedUser;
-import mci.softwareengineering2.group2.views.accountmanagement.AccounterstellenView;
+import mci.softwareengineering2.group2.services.UserService;
+import mci.softwareengineering2.group2.views.accountmanagement.AccounterstellenDialog;
 
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
@@ -19,10 +20,15 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
     private final AuthenticatedUser authenticatedUser;
+    private AccounterstellenDialog signUpDialog;
 
-    public LoginView(AuthenticatedUser authenticatedUser) {
+    public LoginView(AuthenticatedUser authenticatedUser,UserService userService) {
+
         this.authenticatedUser = authenticatedUser;
+
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
+
+        signUpDialog = new AccounterstellenDialog(userService);
 
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());
@@ -30,11 +36,11 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         i18n.getHeader().setDescription("Please enter credentials");
         i18n.setAdditionalInformation(null);
         
-
         LoginI18n.Form i18nForm = i18n.getForm();
         i18nForm.setForgotPassword("Sign in");
         addForgotPasswordListener(event -> {
-            getUI().ifPresent(ui -> ui.navigate(AccounterstellenView.class));
+            // getUI().ifPresent(ui -> ui.navigate(AccounterstellenView.class));
+            signUpDialog.open();
         });
         i18n.setForm(i18nForm);
 

@@ -5,12 +5,10 @@ import java.util.Set;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.vaadin.flow.component.Composite;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
@@ -20,9 +18,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
 
 import mci.softwareengineering2.group2.data.Role;
@@ -30,11 +25,7 @@ import mci.softwareengineering2.group2.data.User;
 import mci.softwareengineering2.group2.services.UserService;
 import mci.softwareengineering2.group2.views.login.LoginView;
 
-@PageTitle("Account erstellen")
-@Route(value = "person-form")
-@AnonymousAllowed
-@Uses(Icon.class)
-public class AccounterstellenView extends Composite<VerticalLayout> {
+public class AccounterstellenDialog extends Dialog {
 
     private UserService userService;
     private TextField firstName;
@@ -45,20 +36,20 @@ public class AccounterstellenView extends Composite<VerticalLayout> {
     private PasswordField passwordField2nd;
     private Button buttonPrimary;
 
-    public AccounterstellenView(UserService userService) {
+    public AccounterstellenDialog(UserService userService) {
         
         this.userService = userService;
 
-        getContent().setWidth("100%");
-        getContent().getStyle().set("flex-grow", "1");
-        getContent().setJustifyContentMode(JustifyContentMode.START);
-        getContent().setAlignItems(Alignment.CENTER);
+        // this.setWidth("100%");
+        // getContent().getStyle().set("flex-grow", "1");
+        // getContent().setJustifyContentMode(JustifyContentMode.START);
+        // getContent().setAlignItems(Alignment.CENTER);
 
         VerticalLayout layoutColumn2 = new VerticalLayout();
         layoutColumn2.setWidth("100%");
         layoutColumn2.setMaxWidth("800px");
         layoutColumn2.setHeight("min-content");
-        getContent().add(layoutColumn2);
+        this.add(layoutColumn2);
 
         FormLayout formLayout2Col = new FormLayout();
         formLayout2Col.setWidth("100%");
