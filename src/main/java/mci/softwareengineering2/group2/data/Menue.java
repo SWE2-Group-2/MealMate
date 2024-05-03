@@ -12,7 +12,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "menue")
+@Table(name = "menue_table")
 public class Menue extends AbstractEntity{
     
     @Id

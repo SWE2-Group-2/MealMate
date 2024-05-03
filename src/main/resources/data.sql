@@ -1,5 +1,5 @@
 INSERT INTO
-    user (
+    user_table (
         id,
         username,
         hashed_password,
@@ -21,7 +21,7 @@ WHERE
         SELECT
             *
         FROM
-            user
+            user_table
         WHERE
             id = 1
     );
@@ -43,7 +43,7 @@ WHERE
 
 --Default menue
 INSERT INTO
-    menue (id, name, version, is_favourit)
+    menue_table (id, name, version, is_favourit)
 SELECT
     1,
     'Mittagsmenue',
@@ -54,14 +54,14 @@ WHERE
         SELECT
             *
         FROM
-            menue
+            menue_table
         WHERE
             id = 1
     );
 
 --Default meals
 INSERT INTO
-    meal (
+    meal_table (
         id,
         name,
         version,
@@ -85,13 +85,13 @@ WHERE
         SELECT
             *
         FROM
-            meal
+            meal_table
         WHERE
             id = 1
     );
 
 INSERT INTO
-    meal (
+    meal_table (
         id,
         name,
         version,
@@ -115,13 +115,13 @@ WHERE
         SELECT
             *
         FROM
-            meal
+            meal_table
         WHERE
             id = 2
     );
 
 INSERT INTO
-    meal (
+    meal_table (
         id,
         name,
         version,
@@ -145,13 +145,13 @@ WHERE
         SELECT
             *
         FROM
-            meal
+            meal_table
         WHERE
             id = 3
     );
 
 INSERT INTO
-    meal (
+    meal_table (
         id,
         name,
         version,
@@ -175,13 +175,13 @@ WHERE
         SELECT
             *
         FROM
-            meal
+            meal_table
         WHERE
             id = 4
     );
 
 INSERT INTO
-    meal (
+    meal_table (
         id,
         name,
         version,
@@ -205,7 +205,7 @@ WHERE
         SELECT
             *
         FROM
-            meal
+            meal_table
         WHERE
             id = 5
     );

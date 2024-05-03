@@ -2,7 +2,8 @@ package mci.softwareengineering2.group2.services;
 
 import java.util.Optional;
 import mci.softwareengineering2.group2.data.Address;
-import mci.softwareengineering2.group2.data.AddressRepository;
+import mci.softwareengineering2.group2.datarepository.AddressRepository;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

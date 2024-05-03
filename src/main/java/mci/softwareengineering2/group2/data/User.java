@@ -1,6 +1,8 @@
 package mci.softwareengineering2.group2.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vaadin.flow.component.template.Id;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -18,9 +20,11 @@ import java.util.Arrays;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "user_table")
 public class User extends AbstractEntity {
 
+    @Id
+    private Long id;
     private String username;
     @JsonIgnore
     private String hashedPassword;
@@ -114,9 +118,15 @@ public class User extends AbstractEntity {
     public void setAddress(Address address) {
         this.address = address;
     }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
     @Override
     public String toString() {
-        return "User [username=" + username + ", hashedPassword=" + hashedPassword + ", roles=" + roles
+        return "User [id=" + id + ", username=" + username + ", hashedPassword=" + hashedPassword + ", roles=" + roles
                 + ", profilePicture=" + Arrays.toString(profilePicture) + ", firstName=" + firstName + ", lastName="
                 + lastName + ", email=" + email + ", phone=" + phone + ", dateOfBirth=" + dateOfBirth + ", occupation="
                 + occupation + ", important=" + important + ", address=" + address + "]";

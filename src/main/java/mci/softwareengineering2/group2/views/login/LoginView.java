@@ -37,9 +37,8 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
         i18n.setAdditionalInformation(null);
         
         LoginI18n.Form i18nForm = i18n.getForm();
-        i18nForm.setForgotPassword("Sign in");
+        i18nForm.setForgotPassword("Sign Up");
         addForgotPasswordListener(event -> {
-            // getUI().ifPresent(ui -> ui.navigate(AccounterstellenView.class));
             signUpDialog.open();
         });
         i18n.setForm(i18nForm);
