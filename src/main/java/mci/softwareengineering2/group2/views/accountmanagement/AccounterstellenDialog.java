@@ -134,6 +134,7 @@ public class AccounterstellenDialog extends Dialog {
         if (isUsernameFilled && isPasswordFilled && isPassword2ndFilled && isPasswordEqual) {
 
             User user = new User();
+
             user.setFirstName(firstName.getValue());
             user.setLastName(lastname.getValue());
             user.setUsername(username.getValue());

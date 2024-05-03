@@ -1,7 +1,8 @@
 package mci.softwareengineering2.group2.views.bestellungen;
 
-import mci.softwareengineering2.group2.data.SamplePerson;
-import mci.softwareengineering2.group2.services.SamplePersonService;
+import mci.softwareengineering2.group2.data.User;
+import mci.softwareengineering2.group2.services.UserService;
+
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -41,13 +42,13 @@ import org.springframework.data.jpa.domain.Specification;
 @Uses(Icon.class)
 public class BestellungenView extends Div {
 
-    private Grid<SamplePerson> grid;
+    private Grid<User> grid;
 
     private Filters filters;
-    private final SamplePersonService samplePersonService;
+    private final UserService userService;
 
-    public BestellungenView(SamplePersonService SamplePersonService) {
-        this.samplePersonService = SamplePersonService;
+    public BestellungenView(UserService userService) {
+        this.userService = userService;
         setSizeFull();
         addClassNames("bestellungen-view");
 
@@ -83,7 +84,7 @@ public class BestellungenView extends Div {
         return mobileFilters;
     }
 
-    public static class Filters extends Div implements Specification<SamplePerson> {
+    public static class Filters extends Div implements Specification<User> {
 
         private final TextField name = new TextField("Name");
         private final TextField phone = new TextField("Phone");
@@ -145,7 +146,7 @@ public class BestellungenView extends Div {
         }
 
         @Override
-        public Predicate toPredicate(Root<SamplePerson> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+        public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
             List<Predicate> predicates = new ArrayList<>();
 
             if (!name.isEmpty()) {
@@ -218,7 +219,7 @@ public class BestellungenView extends Div {
     }
 
     private Component createGrid() {
-        grid = new Grid<>(SamplePerson.class, false);
+        grid = new Grid<>(User.class, false);
         grid.addColumn("firstName").setAutoWidth(true);
         grid.addColumn("lastName").setAutoWidth(true);
         grid.addColumn("email").setAutoWidth(true);
@@ -227,7 +228,7 @@ public class BestellungenView extends Div {
         grid.addColumn("occupation").setAutoWidth(true);
         grid.addColumn("role").setAutoWidth(true);
 
-        grid.setItems(query -> samplePersonService.list(
+        grid.setItems(query -> userService.list(
                 PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)),
                 filters).stream());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);

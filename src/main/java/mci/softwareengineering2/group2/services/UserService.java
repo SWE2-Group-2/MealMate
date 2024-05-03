@@ -1,7 +1,8 @@
 package mci.softwareengineering2.group2.services;
 
 import mci.softwareengineering2.group2.data.User;
-import mci.softwareengineering2.group2.data.UserRepository;
+import mci.softwareengineering2.group2.datarepository.UserRepository;
+
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

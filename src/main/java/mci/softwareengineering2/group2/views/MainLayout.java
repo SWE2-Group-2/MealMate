@@ -94,7 +94,6 @@ public class MainLayout extends AppLayout {
         }
         if (accessChecker.hasAccess(BestellungenView.class)) {
             nav.addItem(new SideNavItem("Bestellungen", BestellungenView.class, LineAwesomeIcon.FILTER_SOLID.create()));
-
         }
 
         return nav;
@@ -107,7 +106,7 @@ public class MainLayout extends AppLayout {
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
 
-            Avatar avatar = new Avatar(user.getFirstName());
+            Avatar avatar = new Avatar(user.getUsername());
             if (user.getProfilePicture() != null) {
                 StreamResource resource = new StreamResource("profile-pic",
                         () -> new ByteArrayInputStream(user.getProfilePicture()));
@@ -121,7 +120,7 @@ public class MainLayout extends AppLayout {
             MenuItem userName = userMenu.addItem("");
             Div div = new Div();
             div.add(avatar);
-            div.add(user.getFirstName());
+            div.add(user.getUsername());
             div.add(new Icon("lumo", "dropdown"));
             div.getElement().getStyle().set("display", "flex");
             div.getElement().getStyle().set("align-items", "center");

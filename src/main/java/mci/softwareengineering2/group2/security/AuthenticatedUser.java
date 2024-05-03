@@ -1,7 +1,8 @@
 package mci.softwareengineering2.group2.security;
 
 import mci.softwareengineering2.group2.data.User;
-import mci.softwareengineering2.group2.data.UserRepository;
+import mci.softwareengineering2.group2.datarepository.UserRepository;
+
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import java.util.Optional;
 import org.springframework.security.core.userdetails.UserDetails;

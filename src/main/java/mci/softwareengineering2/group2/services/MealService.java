@@ -1,27 +1,29 @@
 package mci.softwareengineering2.group2.services;
 
 import java.util.Optional;
-import mci.softwareengineering2.group2.data.SamplePerson;
-import mci.softwareengineering2.group2.data.SamplePersonRepository;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import mci.softwareengineering2.group2.data.Meal;
+import mci.softwareengineering2.group2.datarepository.MealRepository;
+
 @Service
-public class SamplePersonService {
+public class MealService {
 
-    private final SamplePersonRepository repository;
+private final MealRepository repository;
 
-    public SamplePersonService(SamplePersonRepository repository) {
+    public MealService(MealRepository repository) {
         this.repository = repository;
     }
 
-    public Optional<SamplePerson> get(Long id) {
+    public Optional<Meal> get(Long id) {
         return repository.findById(id);
     }
 
-    public SamplePerson update(SamplePerson entity) {
+    public Meal update(Meal entity) {
         return repository.save(entity);
     }
 
@@ -29,16 +31,15 @@ public class SamplePersonService {
         repository.deleteById(id);
     }
 
-    public Page<SamplePerson> list(Pageable pageable) {
+    public Page<Meal> list(Pageable pageable) {
         return repository.findAll(pageable);
     }
 
-    public Page<SamplePerson> list(Pageable pageable, Specification<SamplePerson> filter) {
+    public Page<Meal> list(Pageable pageable, Specification<Meal> filter) {
         return repository.findAll(filter, pageable);
     }
 
     public int count() {
         return (int) repository.count();
     }
-
 }

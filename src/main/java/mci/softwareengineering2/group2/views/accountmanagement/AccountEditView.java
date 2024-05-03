@@ -108,7 +108,6 @@ public class AccountEditView extends Composite<VerticalLayout>{
         
         layoutRow.add(buttonPrimary);
 
-        
         firstName.setValue(currentUser.getFirstName());
         lastname.setValue(currentUser.getLastName());
         username.setValue(currentUser.getUsername());

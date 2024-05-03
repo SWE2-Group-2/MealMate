@@ -1,10 +1,15 @@
 package mci.softwareengineering2.group2.data;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
-public class SampleAddress extends AbstractEntity {
+public class Address extends AbstractEntity {
 
+    @Id
+    @Column(name = "addressId")
+    private Long id;
     private String street;
     private String postalCode;
     private String city;
