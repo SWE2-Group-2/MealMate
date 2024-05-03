@@ -5,21 +5,15 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.Uses;
-import com.vaadin.flow.component.html.OrderedList;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import com.vaadin.flow.theme.lumo.LumoUtility.Display;
-import com.vaadin.flow.theme.lumo.LumoUtility.Gap;
-import com.vaadin.flow.theme.lumo.LumoUtility.ListStyleType;
-import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
-import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
-
 import jakarta.annotation.security.PermitAll;
 import mci.softwareengineering2.group2.data.Meal;
 import mci.softwareengineering2.group2.services.MealService;
@@ -32,13 +26,8 @@ import mci.softwareengineering2.group2.views.MainLayout;
 @Uses(Icon.class)
 public class SpeisekarteView extends HorizontalLayout {
 
-    private OrderedList imageContainer;
-    private OrderedList imageContainer1;
-    private MealService mealService;
 
     public SpeisekarteView(MealService mealService) {
-
-        this.mealService = mealService;
 
         //Todo add the tabs like teh design shows it 
 
@@ -62,32 +51,14 @@ public class SpeisekarteView extends HorizontalLayout {
             }
             i++;
         }
-        mainLayout.add(layout,layout1);
-        add(mainLayout);
-    }
 
-    private void constructUI() {
+        HorizontalLayout cartLayout = new HorizontalLayout();
+        Button cart = new Button(VaadinIcon.CART_O.create());
+        cart.setHeight("50px");
+        cart.setText("Warenkorb");
+        cartLayout.add(cart);
 
-        HorizontalLayout mainLayout = new HorizontalLayout();
-        mainLayout.setSizeFull();
-
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setPadding(true);
-        layout.setAlignItems(FlexComponent.Alignment.STRETCH);
-        imageContainer = new OrderedList();
-        imageContainer.addClassNames(Gap.MEDIUM, Display.GRID, ListStyleType.NONE, Margin.NONE, Padding.NONE);
-        layout.add(imageContainer);
-        mainLayout.add(layout);
-
-
-        HorizontalLayout layout1 = new HorizontalLayout();
-        layout1.setPadding(true);
-        layout1.setAlignItems(FlexComponent.Alignment.STRETCH);
-        imageContainer1 = new OrderedList();
-        imageContainer1.addClassNames(Gap.MEDIUM, Display.GRID, ListStyleType.NONE, Margin.NONE, Padding.NONE);
-        layout1.add(imageContainer1);
-        mainLayout.add(layout1);
-
+        mainLayout.add(layout,layout1,cartLayout);
         add(mainLayout);
     }
 }

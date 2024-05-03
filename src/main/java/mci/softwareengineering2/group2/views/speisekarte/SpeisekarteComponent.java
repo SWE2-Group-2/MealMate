@@ -35,7 +35,7 @@ public class SpeisekarteComponent extends ListItem {
                 div.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
                                 Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
                 div.setHeight("150px");
-                div.setWidth("700px");
+                div.setWidth("650px");
 
                 Image image = new Image();
                 image.setWidth("100%");
