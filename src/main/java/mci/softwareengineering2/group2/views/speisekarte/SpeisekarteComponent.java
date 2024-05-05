@@ -20,12 +20,15 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
+import mci.softwareengineering2.group2.data.Cart;
+import mci.softwareengineering2.group2.data.Meal;
+
 public class SpeisekarteComponent extends ListItem {
 
         private final String defaultString = "https://imgs.search.brave.com/Go2Gk8Q0PVTkq9i3e6Vti9UHhjMx_rdrlzIG6GmzZUg/rs:fit:500:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA0LzYwLzAxLzM2/LzM2MF9GXzQ2MDAx/MzYyMl82eEY4dU42/dWJNdkx4MHRBSkVD/QkhmS1BvTk9SNWNS/YS5qcGc";
         private int amountValue = 1;
         private Span amount;
-        SpeisekarteComponent(String name, String descriptionText, String allergene,float price,String url) {
+        SpeisekarteComponent(Meal meal,Cart cart) {
 
                 addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
                                 Padding.MEDIUM,
@@ -39,8 +42,7 @@ public class SpeisekarteComponent extends ListItem {
 
                 Image image = new Image();
                 image.setWidth("100%");
-                image.setSrc((url == null || url != null && url.length() == 0) ? defaultString : url);
-                image.setAlt("text");
+                image.setSrc((meal.getPicture() == null || meal.getPicture() != null && meal.getPicture().length() == 0) ? defaultString : meal.getPicture());
 
                 div.add(image);
 
@@ -48,17 +50,17 @@ public class SpeisekarteComponent extends ListItem {
 
                 Span header = new Span();
                 header.addClassNames(FontSize.XLARGE, FontWeight.SEMIBOLD);
-                header.setText(name);
+                header.setText(meal.getName());
                 headerLayout.add(header);
 
                 Span badge = new Span();
                 badge.getElement().setAttribute("theme", "badge");
-                badge.setText("" + price + "€");
+                badge.setText("" + meal.getPrice() + "€");
                 headerLayout.add(badge);
 
                 Span subtitle = new Span();
                 subtitle.addClassNames(FontSize.SMALL, TextColor.SECONDARY);
-                subtitle.setText((allergene == null || allergene != null && allergene.length() == 0)  ? "" : allergene);
+                subtitle.setText((meal.getAllergene() == null || meal.getAllergene() != null && meal.getAllergene().length() == 0)  ? "" : meal.getAllergene());
 
                 HorizontalLayout layout = new HorizontalLayout();
 
@@ -86,6 +88,9 @@ public class SpeisekarteComponent extends ListItem {
 
                 Button add = new Button();
                 add.setText("Hinzufügen");
+                add.addClickListener(event -> {
+                        cart.getMeals().add(meal);
+                });
 
                 layout.add(decreas);
                 layout.add(amount);
