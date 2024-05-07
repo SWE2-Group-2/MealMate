@@ -1,8 +1,9 @@
 package mci.softwareengineering2.group2.views.login;
 
 import mci.softwareengineering2.group2.security.AuthenticatedUser;
+import mci.softwareengineering2.group2.services.AddressService;
 import mci.softwareengineering2.group2.services.UserService;
-import mci.softwareengineering2.group2.views.accountmanagement.AccounterstellenDialog;
+import mci.softwareengineering2.group2.views.accountmanagement.AccountManipulationDialog;
 
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.login.LoginOverlay;
@@ -20,15 +21,15 @@ import com.vaadin.flow.server.auth.AnonymousAllowed;
 public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
     private final AuthenticatedUser authenticatedUser;
-    private AccounterstellenDialog signUpDialog;
+    private AccountManipulationDialog signUpDialog;
 
-    public LoginView(AuthenticatedUser authenticatedUser,UserService userService) {
+    public LoginView(AuthenticatedUser authenticatedUser,UserService userService,AddressService addressService) {
 
         this.authenticatedUser = authenticatedUser;
 
         setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
 
-        signUpDialog = new AccounterstellenDialog(userService);
+        signUpDialog = new AccountManipulationDialog(userService,null,addressService);
 
         LoginI18n i18n = LoginI18n.createDefault();
         i18n.setHeader(new LoginI18n.Header());

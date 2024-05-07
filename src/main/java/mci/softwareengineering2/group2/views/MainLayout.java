@@ -2,7 +2,9 @@ package mci.softwareengineering2.group2.views;
 
 import mci.softwareengineering2.group2.data.User;
 import mci.softwareengineering2.group2.security.AuthenticatedUser;
-import mci.softwareengineering2.group2.views.accountmanagement.AccountEditView;
+import mci.softwareengineering2.group2.services.AddressService;
+import mci.softwareengineering2.group2.services.UserService;
+import mci.softwareengineering2.group2.views.accountmanagement.AccountManipulationDialog;
 import mci.softwareengineering2.group2.views.bestellungen.BestellungenView;
 import mci.softwareengineering2.group2.views.speisekarte.SpeisekarteView;
 import mci.softwareengineering2.group2.views.warenkorb.WarenkorbView;
@@ -23,13 +25,11 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
 import jakarta.annotation.security.PermitAll;
 
-import java.io.ByteArrayInputStream;
 import java.util.Optional;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
@@ -44,10 +44,14 @@ public class MainLayout extends AppLayout {
 
     private AuthenticatedUser authenticatedUser;
     private AccessAnnotationChecker accessChecker;
+    private UserService userService;
+    private AddressService addressService;
 
-    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
+    public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker,UserService userService,AddressService addressService) {
         this.authenticatedUser = authenticatedUser;
         this.accessChecker = accessChecker;
+        this.userService = userService;
+        this.addressService = addressService;
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -77,12 +81,6 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        //Create account is available via sign in form
-        // if (accessChecker.hasAccess(AccounterstellenView.class)) {
-        //     nav.addItem(
-        //             new SideNavItem("Account erstellen", AccounterstellenView.class, LineAwesomeIcon.USER.create()));
-        // 
-        // }
         if (accessChecker.hasAccess(SpeisekarteView.class)) {
             nav.addItem(new SideNavItem("Speisekarte", SpeisekarteView.class,
                     LineAwesomeIcon.UTENSIL_SPOON_SOLID.create()));
@@ -106,11 +104,9 @@ public class MainLayout extends AppLayout {
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
 
-            Avatar avatar = new Avatar(user.getUsername());
+            Avatar avatar = new Avatar(user.getFirstName());
             if (user.getProfilePicture() != null) {
-                StreamResource resource = new StreamResource("profile-pic",
-                        () -> new ByteArrayInputStream(user.getProfilePicture()));
-                avatar.setImageResource(resource);
+                avatar.setImage(user.getProfilePicture() );
                 avatar.setThemeName("xsmall");
                 avatar.getElement().setAttribute("tabindex", "-1");
             }
@@ -120,7 +116,7 @@ public class MainLayout extends AppLayout {
             MenuItem userName = userMenu.addItem("");
             Div div = new Div();
             div.add(avatar);
-            div.add(user.getUsername());
+            div.add(user.getFirstName());
             div.add(new Icon("lumo", "dropdown"));
             div.getElement().getStyle().set("display", "flex");
             div.getElement().getStyle().set("align-items", "center");
@@ -130,7 +126,8 @@ public class MainLayout extends AppLayout {
                 authenticatedUser.logout();
             });
             userName.getSubMenu().addItem("Edit",e ->{
-                getUI().ifPresent(ui -> ui.navigate(AccountEditView.class));
+                AccountManipulationDialog dialog = new AccountManipulationDialog(userService, authenticatedUser,addressService);
+                dialog.open();
             });
 
             layout.add(userMenu);

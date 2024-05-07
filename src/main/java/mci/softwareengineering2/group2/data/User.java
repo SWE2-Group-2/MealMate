@@ -32,8 +32,8 @@ public class User extends AbstractEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Role> roles;
     @Lob
-    @Column(length = 1000000)
-    private byte[] profilePicture;
+    @Column(length = 1000)
+    private String profilePicture;
     private String firstName;
     private String lastName;
     @Email
@@ -63,12 +63,6 @@ public class User extends AbstractEntity {
     }
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-    public byte[] getProfilePicture() {
-        return profilePicture;
-    }
-    public void setProfilePicture(byte[] profilePicture) {
-        this.profilePicture = profilePicture;
     }
     public String getFirstName() {
         return firstName;
@@ -124,11 +118,17 @@ public class User extends AbstractEntity {
     public void setId(Long id) {
         this.id = id;
     }
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", hashedPassword=" + hashedPassword + ", roles=" + roles
-                + ", profilePicture=" + Arrays.toString(profilePicture) + ", firstName=" + firstName + ", lastName="
-                + lastName + ", email=" + email + ", phone=" + phone + ", dateOfBirth=" + dateOfBirth + ", occupation="
+                + ", profilePicture=" + profilePicture + ", firstName=" + firstName + ", lastName=" + lastName
+                + ", email=" + email + ", phone=" + phone + ", dateOfBirth=" + dateOfBirth + ", occupation="
                 + occupation + ", important=" + important + ", address=" + address + "]";
     }
 }

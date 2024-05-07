@@ -16,6 +16,7 @@ public class CartDialog extends Dialog {
     public void generateCart(Cart cart) {
 
         VerticalLayout layout = new VerticalLayout();
+        mealList.clear();
         this.removeAll();
 
         if (cart != null && cart.getMeals() != null) {
