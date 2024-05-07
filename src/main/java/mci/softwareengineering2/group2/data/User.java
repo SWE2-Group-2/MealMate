@@ -16,7 +16,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.Set;
 
 @Entity
