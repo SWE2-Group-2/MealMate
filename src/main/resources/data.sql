@@ -43,7 +43,7 @@ WHERE
 
 --Default menue
 INSERT INTO
-    menue_table (id, name, version, is_favourit)
+    menue_table (id, name, version, is_Favorit)
 SELECT
     1,
     'Mittagsmenue',

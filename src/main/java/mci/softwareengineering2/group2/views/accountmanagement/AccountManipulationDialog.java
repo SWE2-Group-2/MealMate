@@ -148,7 +148,7 @@ public class AccountManipulationDialog extends Dialog {
         layoutColumn2.add(layoutRow);
 
         buttonPrimary = new Button();
-        buttonPrimary.setText("Account erstellen");
+        buttonPrimary.setText(currentUser == null ? "Account erstellen" : "Update");
         buttonPrimary.setWidth("min-content");
         buttonPrimary.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
