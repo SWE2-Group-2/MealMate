@@ -27,6 +27,34 @@ WHERE
     );
 
 INSERT INTO
+    user_table (
+        id,
+        username,
+        hashed_password,
+        version,
+        first_name,
+        last_name,
+        important
+    )
+SELECT
+    2,
+    'user',
+    '$2a$12$GIRymlzWRFI82IQtGu.lmOXx3yrx/R.GGUGoxb0CGsAozZKaDnh7W',
+    2,
+    'User',
+    'User',
+    TRUE
+WHERE
+    NOT EXISTS (
+        SELECT
+            *
+        FROM
+            user_table
+        WHERE
+            id = 2
+    );
+
+INSERT INTO
     user_roles (user_id, roles)
 SELECT
     1,
@@ -40,6 +68,22 @@ WHERE
         WHERE
             user_id = 1
     );
+
+INSERT INTO
+    user_roles (user_id, roles)
+SELECT
+    2,
+    'USER'
+WHERE
+    NOT EXISTS (
+        SELECT
+            *
+        FROM
+            user_roles
+        WHERE
+            user_id = 2
+    );
+
 
 --Default menue
 INSERT INTO
