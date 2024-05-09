@@ -269,10 +269,15 @@ INSERT INTO order_meal (order_id, meal_id) VALUES (2, 4);
 INSERT INTO order_meal (order_id, meal_id) VALUES (3, 2);
 INSERT INTO order_meal (order_id, meal_id) VALUES (3, 3);
 INSERT INTO order_meal (order_id, meal_id) VALUES (3, 5);
-/*
-INSERT INTO order_table (id, user_id, start_date, state, version)
-VALUES (4, 1, CURRENT_DATE, 'ORDER_DONE', 1);
 
+/*INSERT INTO order_table (id, user_id, start_date, state, version)
+VALUES (4, 1, CURRENT_DATE, 'ORDER_DONE', 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (4, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (4, 2);*/
+
+
+/*INSERT INTO order_table (id, user_id, start_date, state, version)
+VALUES (4, 2, CURRENT_DATE, 'ORDER_BEING_DELIVERED', 1);
 INSERT INTO order_meal (order_id, meal_id) VALUES (4, 1);
 INSERT INTO order_meal (order_id, meal_id) VALUES (4, 2);*/
 

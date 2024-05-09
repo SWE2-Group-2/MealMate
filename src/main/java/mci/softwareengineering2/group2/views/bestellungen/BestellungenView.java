@@ -15,13 +15,14 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import jakarta.annotation.security.RolesAllowed;
+import jakarta.annotation.security.PermitAll;
 import mci.softwareengineering2.group2.data.Meal;
 import mci.softwareengineering2.group2.data.Order;
 import mci.softwareengineering2.group2.data.OrderState;
+import mci.softwareengineering2.group2.data.Role;
+import mci.softwareengineering2.group2.security.AuthenticatedUser;
 import mci.softwareengineering2.group2.services.OrderService;
 import mci.softwareengineering2.group2.views.MainLayout;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.HashMap;
@@ -31,16 +32,18 @@ import java.util.stream.Stream;
 
 @PageTitle("Bestellungen")
 @Route(value = "bestellungen", layout = MainLayout.class)
-@RolesAllowed("ADMIN")
+@PermitAll
 @Uses(Icon.class)
 public class BestellungenView extends Div {
 
     private Grid<Order> currentOrdersGrid;
     private Grid<Order> completedOrdersGrid;
     private final OrderService orderService;
+    private AuthenticatedUser currentUser;
 
-    public BestellungenView(OrderService orderService) {
+    public BestellungenView(OrderService orderService, AuthenticatedUser currentUser) {
         this.orderService = orderService;
+        this.currentUser = currentUser;
         setSizeFull();
         addClassNames("bestellungen-view");
         setupGrid();
@@ -118,34 +121,34 @@ public class BestellungenView extends Div {
                 .setHeader("Gesamtpreis").setAutoWidth(true);
         grid.addColumn(order -> order.getState().toString()).setHeader("Status").setAutoWidth(true);
 
-        grid.addColumn(new ComponentRenderer<>(order -> {
+        if (currentUser.get().isPresent() && currentUser.get().get().getRoles().contains(Role.ADMIN)){
+            grid.addColumn(new ComponentRenderer<>(order -> {
 
-            Button editButton = new Button(new Icon(VaadinIcon.EDIT));
-            editButton.addClickListener(e -> showEditDialog(order));
-            return new HorizontalLayout(editButton);
+                Button editButton = new Button(new Icon(VaadinIcon.EDIT));
+                editButton.addClickListener(e -> showEditDialog(order));
+                return new HorizontalLayout(editButton);
 
-        })).setHeader("Aktion").setAutoWidth(true);
+            })).setHeader("Aktion").setAutoWidth(true);
+        }
 
         DataProvider<Order, Void> dataProvider = DataProvider.fromCallbacks(
                 query -> {
-                    Page<Order> orderPage = orderService.list(PageRequest.of(query.getPage(), query.getPageSize()));
-                    if (!orderPage.hasContent()) {
-                        return Stream.empty();
+                    Stream<Order> ordersStream = orderService.list(PageRequest.of(query.getPage(), query.getPageSize()))
+                            .getContent().stream();
+                    if (currentUser.get().isPresent() && !currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+                        ordersStream = ordersStream.filter(order -> order.getUser().equals(currentUser.get().get()));
                     }
-
-                    return orderPage.getContent().stream().filter(
-                            completed ? order -> order.getState() == OrderState.ORDER_DONE :
-                                    order -> order.getState() != OrderState.ORDER_DONE
-                    );
+                    return ordersStream.filter(completed ? order -> order.getState() == OrderState.ORDER_DONE :
+                            order -> order.getState() != OrderState.ORDER_DONE);
                 },
                 query -> {
-
-                    return (int) orderService.list(PageRequest.of(0, Integer.MAX_VALUE))
-                            .getContent()
-                            .stream()
-                            .filter(completed ? order -> order.getState() == OrderState.ORDER_DONE :
-                                    order -> order.getState() != OrderState.ORDER_DONE)
-                            .count();
+                    Stream<Order> ordersStream = orderService.list(PageRequest.of(0, Integer.MAX_VALUE))
+                            .getContent().stream();
+                    if (currentUser.get().isPresent() && !currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+                        ordersStream = ordersStream.filter(order -> order.getUser().equals(currentUser.get().get()));
+                    }
+                    return (int) ordersStream.filter(completed ? order -> order.getState() == OrderState.ORDER_DONE :
+                            order -> order.getState() != OrderState.ORDER_DONE).count();
                 }
         );
         grid.setDataProvider(dataProvider);
