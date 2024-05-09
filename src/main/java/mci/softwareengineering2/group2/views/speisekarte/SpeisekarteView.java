@@ -62,12 +62,24 @@ public class SpeisekarteView extends HorizontalLayout {
         for (Meal meal : mealList) {
 
             if (i % 2 == 0) {
-                layout.add(new SpeisekarteComponent(meal,userCart));
+                layout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
             } else {
-                layout1.add(new SpeisekarteComponent(meal,userCart));
+                layout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
             }
             i++;
         }
+
+        // Neue Speise hinzufügen nur als Admin sichtbar
+        // Jetzt als Dialog Verfügbar SpeisenDialog.addSpeisenDialog(mealService);
+        /*
+        if (currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+            if (i % 2 == 0) {
+                layout.add(new SpeisekarteComponent());
+            } else {
+                layout1.add(new SpeisekarteComponent());
+            }
+        } 
+        */
 
         HorizontalLayout cartLayout = new HorizontalLayout();
         Button cart = new Button(VaadinIcon.CART_O.create());

@@ -6,6 +6,8 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.Background;
 import com.vaadin.flow.theme.lumo.LumoUtility.BorderRadius;
@@ -22,13 +24,25 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
 import mci.softwareengineering2.group2.data.Cart;
 import mci.softwareengineering2.group2.data.Meal;
+import mci.softwareengineering2.group2.data.Role;
+import mci.softwareengineering2.group2.security.AuthenticatedUser;
+import mci.softwareengineering2.group2.services.MealService;
 
 public class SpeisekarteComponent extends ListItem {
 
         private final String defaultString = "https://imgs.search.brave.com/Go2Gk8Q0PVTkq9i3e6Vti9UHhjMx_rdrlzIG6GmzZUg/rs:fit:500:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA0LzYwLzAxLzM2/LzM2MF9GXzQ2MDAx/MzYyMl82eEY4dU42/dWJNdkx4MHRBSkVD/QkhmS1BvTk9SNWNS/YS5qcGc";
+        private final String defaultHeightDiv = "150px";
+        private final String defaultWidthDiv = "650px";
+        private SpeisekarteDialog editSpeisenDialog = new SpeisekarteDialog();
+        private SpeisekarteDialog addSpeisenDialog = new SpeisekarteDialog();
+        private SpeisekarteDialog delSpeisenDialog = new SpeisekarteDialog();
+        private TextField speisenName;
+        private TextField speisenPreis;
+        private TextField speisenAllergene;
+        private TextField speisenBild;
         private int amountValue = 1;
         private Span amount;
-        SpeisekarteComponent(Meal meal,Cart cart) {
+        SpeisekarteComponent(Meal meal,Cart cart,AuthenticatedUser currentUser, MealService mealService) {
 
                 addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
                                 Padding.MEDIUM,
@@ -37,8 +51,8 @@ public class SpeisekarteComponent extends ListItem {
                 Div div = new Div();
                 div.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
                                 Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
-                div.setHeight("150px");
-                div.setWidth("650px");
+                div.setHeight(defaultHeightDiv);
+                div.setWidth(defaultWidthDiv);
 
                 Image image = new Image();
                 image.setWidth("100%");
@@ -46,6 +60,34 @@ public class SpeisekarteComponent extends ListItem {
 
                 div.add(image);
 
+                // Als Admin wird ein Button zum Löschen und editieren der Speise hinzugefügt
+                if (currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+              
+                        VerticalLayout buttonLayout = new VerticalLayout();
+                        Button delete = new Button();
+                        delete.setText("Speise Löschen");
+                        delete.addClickListener(event -> {
+                                delSpeisenDialog.delSpeisenDialog(meal, mealService);
+                                delSpeisenDialog.open();
+                        });
+
+                        Button edit = new Button();
+                        edit.setText("Speise Bearbeiten");
+                        edit.addClickListener(event -> {
+                                editSpeisenDialog.editSpeisenDialog(meal, mealService);
+                                editSpeisenDialog.open();
+                        });
+
+                        Button add = new Button();
+                        add.setText("Neue Speise");
+                        add.addClickListener(event -> {
+                                addSpeisenDialog.addSpeisenDialog(mealService);
+                                addSpeisenDialog.open();
+                        });
+                        buttonLayout.add(delete, edit, add);
+                        div.add(buttonLayout);
+                }
+                
                 HorizontalLayout headerLayout = new HorizontalLayout();
 
                 Span header = new Span();
@@ -101,4 +143,69 @@ public class SpeisekarteComponent extends ListItem {
                 add(div, headerLayout, subtitle,layout);
         }
 
+        // Um eine neue Speise durch den Administrator hinzufügen zu können, 
+        // bebnötigt es eine leere SpeisekarteComponent mit einem Button und Feldern zum hinzu fügen der Speise
+        SpeisekarteComponent() {
+                addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
+                        Padding.MEDIUM, BorderRadius.LARGE);
+
+                Div div = new Div();
+                div.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
+                                Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
+                div.setHeight(defaultHeightDiv);
+                div.setWidth(defaultWidthDiv);
+                div.addClassNames(FontSize.XLARGE, FontWeight.SEMIBOLD);
+                div.setText("Neue Speise hinzufügen");
+
+                HorizontalLayout headerLayout = new HorizontalLayout();
+               
+                Span subtitle = new Span();
+                subtitle.addClassNames(FontSize.SMALL, TextColor.SECONDARY);
+                subtitle.setText("Bitte füllen Sie die Felder aus");
+
+                HorizontalLayout layout = new HorizontalLayout();
+                HorizontalLayout layout1 = new HorizontalLayout();
+                HorizontalLayout layout2 = new HorizontalLayout();
+                HorizontalLayout layout3 = new HorizontalLayout();
+
+                layout.setWidthFull();
+                layout1.setWidthFull();
+                layout2.setWidthFull();
+                layout3.setWidthFull();
+
+                speisenName = new TextField();
+                speisenName.setLabel("Name für Speise");
+                speisenName.setWidth("50%");                
+                layout.add(speisenName);
+
+                speisenPreis = new TextField();
+                speisenPreis.setLabel("Preis in €");
+                speisenPreis.setWidth("50%");
+                layout.add(speisenPreis);
+                
+                layout.add(new Span());
+
+                speisenAllergene = new TextField();
+                speisenAllergene.setLabel("Allergene");
+                speisenAllergene.setWidth("98%");
+                layout1.add(speisenAllergene);
+
+                speisenBild = new TextField();
+                speisenBild.setLabel("Bild als URL");
+                speisenBild.setWidth("98%");
+                layout2.add(speisenBild);
+                
+                Button add = new Button();
+                add.setText("Erstellen");
+                add.setWidth("93%");
+                add.addClickListener(event -> {
+                        //TODO: Add new meal
+                        getUI().ifPresent(ui -> ui.getPage().reload());
+                });
+                layout3.add(new Span());
+
+                layout3.add(add);
+
+                add(div, headerLayout, subtitle,layout,layout1,layout2,layout3);
+        }       
 }

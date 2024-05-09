@@ -27,6 +27,10 @@ private final MealRepository repository;
         return repository.save(entity);
     }
 
+    public Meal create(Meal entity) {
+        return repository.save(entity);
+    }
+
     public void delete(Long id) {
         repository.deleteById(id);
     }
