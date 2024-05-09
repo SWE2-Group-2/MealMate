@@ -3,19 +3,12 @@ package mci.softwareengineering2.group2.data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vaadin.flow.component.template.Id;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -45,6 +38,8 @@ public class User extends AbstractEntity {
     @JoinColumn(name = "addressId")
     private Address address;
 
+    @OneToMany
+    private List<Order> orders = new ArrayList<>();
     /**
      * Get the username of an user
      * @return the username or null
@@ -252,6 +247,15 @@ public class User extends AbstractEntity {
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", hashedPassword=" + hashedPassword + ", roles=" + roles

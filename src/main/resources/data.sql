@@ -253,3 +253,26 @@ WHERE
         WHERE
             id = 5
     );
+
+
+INSERT INTO order_table (id, user_id, start_date, state, version)
+VALUES
+    (1, 1, CURRENT_DATE, 'ORDER_RECEIVED', 1),
+    (2, 1, CURRENT_DATE, 'ORDER_IN_PROGRESS', 1),
+    (3, 1, CURRENT_DATE, 'ORDER_BEING_DELIVERED', 1);
+
+
+INSERT INTO order_meal (order_id, meal_id) VALUES (1, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (1, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (2, 3);
+INSERT INTO order_meal (order_id, meal_id) VALUES (2, 4);
+INSERT INTO order_meal (order_id, meal_id) VALUES (3, 2);
+INSERT INTO order_meal (order_id, meal_id) VALUES (3, 3);
+INSERT INTO order_meal (order_id, meal_id) VALUES (3, 5);
+/*
+INSERT INTO order_table (id, user_id, start_date, state, version)
+VALUES (4, 1, CURRENT_DATE, 'ORDER_DONE', 1);
+
+INSERT INTO order_meal (order_id, meal_id) VALUES (4, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (4, 2);*/
+
