@@ -63,43 +63,6 @@ public class BestellungenView extends Div {
         currentOrdersGrid = createOrderGrid(false);
         completedOrdersGrid = createOrderGrid(true);
 
-       /* currentOrdersGrid = new Grid<>(Order.class, false);
-        currentOrdersGrid.addColumn(Order::getId).setHeader("Bestellnummer").setAutoWidth(true);
-        currentOrdersGrid.addColumn(order -> order.getStartDate() != null ? order.getStartDate().toString() : "").setHeader("Datum").setAutoWidth(true);
-        currentOrdersGrid.addColumn(order -> {
-            Map<Meal, Integer> mealCounts = new HashMap<>();
-            for (Meal meal : order.getMeals()) {
-                mealCounts.merge(meal, 1, Integer::sum);
-            }
-            return mealCounts.entrySet().stream()
-                    .map(entry -> entry.getKey().getName() + " x" + entry.getValue())
-                    .collect(Collectors.joining(", "));
-        }).setHeader("Speisen/Getränke").setAutoWidth(true);
-        currentOrdersGrid.addColumn(order -> order.getMeals().stream()
-                        .mapToDouble(meal -> meal.getPrice())
-                        .sum())
-                .setHeader("Gesamtpreis").setAutoWidth(true);
-
-        currentOrdersGrid.addColumn(order -> order.getState().toString()).setHeader("Status").setAutoWidth(true);
-
-        currentOrdersGrid.addColumn(new ComponentRenderer<>(order -> {
-
-                Button editButton = new Button(new Icon(VaadinIcon.EDIT));
-                editButton.addClickListener(e -> showEditDialog(order));
-                return new HorizontalLayout(editButton);
-
-        })).setHeader("Aktion").setAutoWidth(true);
-
-
-
-        DataProvider<Order, Void> dataProvider = DataProvider.fromCallbacks(
-                query -> {
-                    PageRequest pageRequest = PageRequest.of(query.getPage(), query.getPageSize());
-                    return orderService.list(pageRequest).stream();
-                },
-                query -> orderService.count()
-        );
-        currentOrdersGrid.setDataProvider(dataProvider);*/
     }
 
     private Grid<Order> createOrderGrid(boolean completed) {
@@ -133,7 +96,9 @@ public class BestellungenView extends Div {
 
         DataProvider<Order, Void> dataProvider = DataProvider.fromCallbacks(
                 query -> {
-                    Stream<Order> ordersStream = orderService.list(PageRequest.of(query.getPage(), query.getPageSize()))
+                    query.getOffset();
+                    query.getLimit();
+                    Stream<Order> ordersStream = orderService.list(PageRequest.of(0, Integer.MAX_VALUE))
                             .getContent().stream();
                     if (currentUser.get().isPresent() && !currentUser.get().get().getRoles().contains(Role.ADMIN)) {
                         ordersStream = ordersStream.filter(order -> order.getUser().equals(currentUser.get().get()));
@@ -142,6 +107,8 @@ public class BestellungenView extends Div {
                             order -> order.getState() != OrderState.ORDER_DONE);
                 },
                 query -> {
+                    query.getOffset();
+                    query.getLimit();
                     Stream<Order> ordersStream = orderService.list(PageRequest.of(0, Integer.MAX_VALUE))
                             .getContent().stream();
                     if (currentUser.get().isPresent() && !currentUser.get().get().getRoles().contains(Role.ADMIN)) {
@@ -161,12 +128,23 @@ public class BestellungenView extends Div {
         ComboBox<OrderState> stateComboBox = new ComboBox<>("Status ändern", OrderState.values());
         stateComboBox.setValue(order.getState());
         Button saveButton = new Button("Speichern", e -> {
-            order.setState(stateComboBox.getValue());
+            OrderState oldState = order.getState();
+            OrderState newState = stateComboBox.getValue();
+            order.setState(newState);
             orderService.update(order);
             dialog.close();
-            currentOrdersGrid.getDataProvider().refreshItem(order);
+            if (oldState != newState && (newState == OrderState.ORDER_DONE || oldState == OrderState.ORDER_DONE)) {
+                refreshGrids();
+            } else {
+                currentOrdersGrid.getDataProvider().refreshItem(order);
+            }
         });
         dialog.add(stateComboBox, saveButton);
         dialog.open();
+    }
+
+    private void refreshGrids() {
+        currentOrdersGrid.getDataProvider().refreshAll();
+        completedOrdersGrid.getDataProvider().refreshAll();
     }
 }
