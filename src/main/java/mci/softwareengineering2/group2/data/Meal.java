@@ -2,11 +2,10 @@ package mci.softwareengineering2.group2.data;
 
 import com.vaadin.flow.component.template.Id;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "meal_table")
@@ -25,6 +24,8 @@ public class Meal extends AbstractEntity{
     @ManyToOne
     @JoinColumn(name = "menueId")
     private Menue menu;
+    @ManyToMany(mappedBy = "meals")
+    private List<Order> order;
     @Column(length = 500)
     private String picture;
 
@@ -122,6 +123,14 @@ public class Meal extends AbstractEntity{
      */
     public void setMenu(Menue menu) {
         this.menu = menu;
+    }
+
+    public List<Order> getOrder() {
+        return order;
+    }
+
+    public void setOrder(List<Order> order) {
+        this.order = order;
     }
 
     /**

@@ -27,6 +27,34 @@ WHERE
     );
 
 INSERT INTO
+    user_table (
+        id,
+        username,
+        hashed_password,
+        version,
+        first_name,
+        last_name,
+        important
+    )
+SELECT
+    2,
+    'user',
+    '$2a$12$GIRymlzWRFI82IQtGu.lmOXx3yrx/R.GGUGoxb0CGsAozZKaDnh7W',
+    2,
+    'User',
+    'User',
+    TRUE
+WHERE
+    NOT EXISTS (
+        SELECT
+            *
+        FROM
+            user_table
+        WHERE
+            id = 2
+    );
+
+INSERT INTO
     user_roles (user_id, roles)
 SELECT
     1,
@@ -40,6 +68,22 @@ WHERE
         WHERE
             user_id = 1
     );
+
+INSERT INTO
+    user_roles (user_id, roles)
+SELECT
+    2,
+    'USER'
+WHERE
+    NOT EXISTS (
+        SELECT
+            *
+        FROM
+            user_roles
+        WHERE
+            user_id = 2
+    );
+
 
 --Default menue
 INSERT INTO
@@ -209,3 +253,28 @@ WHERE
         WHERE
             id = 5
     );
+
+
+INSERT INTO order_table (id, user_id, start_date, state, version)
+VALUES
+    (1, 1, CURRENT_DATE, 'ORDER_RECEIVED', 1),
+    (2, 1, CURRENT_DATE, 'ORDER_IN_PROGRESS', 1),
+    (3, 1, CURRENT_DATE, 'ORDER_BEING_DELIVERED', 1),
+    (4, 1, CURRENT_DATE, 'ORDER_DONE', 1),
+    (5, 2, CURRENT_DATE, 'ORDER_BEING_DELIVERED', 1),
+    (6, 2, CURRENT_DATE - 1, 'ORDER_DONE', 1);
+
+
+INSERT INTO order_meal (order_id, meal_id) VALUES (1, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (1, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (2, 3);
+INSERT INTO order_meal (order_id, meal_id) VALUES (2, 4);
+INSERT INTO order_meal (order_id, meal_id) VALUES (3, 2);
+INSERT INTO order_meal (order_id, meal_id) VALUES (3, 3);
+INSERT INTO order_meal (order_id, meal_id) VALUES (3, 5);
+INSERT INTO order_meal (order_id, meal_id) VALUES (4, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (4, 2);
+INSERT INTO order_meal (order_id, meal_id) VALUES (5, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (5, 2);
+
+

@@ -1,244 +1,150 @@
 package mci.softwareengineering2.group2.views.bestellungen;
 
-import mci.softwareengineering2.group2.data.User;
-import mci.softwareengineering2.group2.services.UserService;
-
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.checkbox.CheckboxGroup;
-import com.vaadin.flow.component.combobox.MultiSelectComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.Uses;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.FlexLayout;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.spring.data.VaadinSpringDataHelpers;
-import com.vaadin.flow.theme.lumo.LumoUtility;
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.annotation.security.PermitAll;
+import mci.softwareengineering2.group2.data.Meal;
+import mci.softwareengineering2.group2.data.Order;
+import mci.softwareengineering2.group2.data.OrderState;
+import mci.softwareengineering2.group2.data.Role;
+import mci.softwareengineering2.group2.security.AuthenticatedUser;
+import mci.softwareengineering2.group2.services.OrderService;
+import mci.softwareengineering2.group2.views.MainLayout;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.domain.Specification;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @PageTitle("Bestellungen")
-@Route(value = "grid-with-filters")
-@RolesAllowed("ADMIN")
+@Route(value = "bestellungen", layout = MainLayout.class)
+@PermitAll
 @Uses(Icon.class)
 public class BestellungenView extends Div {
 
-    private Grid<User> grid;
+    private Grid<Order> currentOrdersGrid;
+    private Grid<Order> completedOrdersGrid;
+    private final OrderService orderService;
+    private AuthenticatedUser currentUser;
 
-    private Filters filters;
-    private final UserService userService;
-
-    public BestellungenView(UserService userService) {
-        this.userService = userService;
+    public BestellungenView(OrderService orderService, AuthenticatedUser currentUser) {
+        this.orderService = orderService;
+        this.currentUser = currentUser;
         setSizeFull();
         addClassNames("bestellungen-view");
+        setupGrid();
 
-        filters = new Filters(() -> refreshGrid());
-        VerticalLayout layout = new VerticalLayout(createMobileFilters(), filters, createGrid());
-        layout.setSizeFull();
-        layout.setPadding(false);
-        layout.setSpacing(false);
-        add(layout);
+        Accordion accordion = new Accordion();
+
+        VerticalLayout currentOrdersLayout = new VerticalLayout(currentOrdersGrid);
+        accordion.add("Aktuelle Bestellungen", currentOrdersLayout);
+
+        VerticalLayout completedOrdersLayout = new VerticalLayout(completedOrdersGrid);
+        accordion.add("Abgeschlossene Bestellungen", completedOrdersLayout);
+
+        add(accordion);
+    }
+    private void setupGrid() {
+
+        currentOrdersGrid = createOrderGrid(false);
+        completedOrdersGrid = createOrderGrid(true);
+
     }
 
-    private HorizontalLayout createMobileFilters() {
-        // Mobile version
-        HorizontalLayout mobileFilters = new HorizontalLayout();
-        mobileFilters.setWidthFull();
-        mobileFilters.addClassNames(LumoUtility.Padding.MEDIUM, LumoUtility.BoxSizing.BORDER,
-                LumoUtility.AlignItems.CENTER);
-        mobileFilters.addClassName("mobile-filters");
-
-        Icon mobileIcon = new Icon("lumo", "plus");
-        Span filtersHeading = new Span("Filters");
-        mobileFilters.add(mobileIcon, filtersHeading);
-        mobileFilters.setFlexGrow(1, filtersHeading);
-        mobileFilters.addClickListener(e -> {
-            if (filters.getClassNames().contains("visible")) {
-                filters.removeClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:plus");
-            } else {
-                filters.addClassName("visible");
-                mobileIcon.getElement().setAttribute("icon", "lumo:minus");
+    private Grid<Order> createOrderGrid(boolean completed) {
+        Grid<Order> grid = new Grid<>(Order.class, false);
+        grid.addColumn(Order::getId).setHeader("Bestellnummer").setAutoWidth(true);
+        grid.addColumn(order -> order.getStartDate() != null ? order.getStartDate().toString() : "").setHeader("Datum").setAutoWidth(true);
+        grid.addColumn(order -> {
+            Map<Meal, Integer> mealCounts = new HashMap<>();
+            for (Meal meal : order.getMeals()) {
+                mealCounts.merge(meal, 1, Integer::sum);
             }
-        });
-        return mobileFilters;
-    }
+            return mealCounts.entrySet().stream()
+                    .map(entry -> entry.getKey().getName() + " x " + entry.getValue())
+                    .collect(Collectors.joining(", "));
+        }).setHeader("Speisen/Getränke").setAutoWidth(true);
+        grid.addColumn(order -> order.getMeals().stream()
+                        .mapToDouble(meal -> meal.getPrice())
+                        .sum())
+                .setHeader("Gesamtpreis").setAutoWidth(true);
+        grid.addColumn(order -> order.getState().toString()).setHeader("Status").setAutoWidth(true);
 
-    public static class Filters extends Div implements Specification<User> {
+        if (currentUser.get().isPresent() && currentUser.get().get().getRoles().contains(Role.ADMIN)){
+            grid.addColumn(new ComponentRenderer<>(order -> {
 
-        private final TextField name = new TextField("Name");
-        private final TextField phone = new TextField("Phone");
-        private final DatePicker startDate = new DatePicker("Date of Birth");
-        private final DatePicker endDate = new DatePicker();
-        private final MultiSelectComboBox<String> occupations = new MultiSelectComboBox<>("Occupation");
-        private final CheckboxGroup<String> roles = new CheckboxGroup<>("Role");
+                Button editButton = new Button(new Icon(VaadinIcon.EDIT));
+                editButton.addClickListener(e -> showEditDialog(order));
+                return new HorizontalLayout(editButton);
 
-        public Filters(Runnable onSearch) {
-
-            setWidthFull();
-            addClassName("filter-layout");
-            addClassNames(LumoUtility.Padding.Horizontal.LARGE, LumoUtility.Padding.Vertical.MEDIUM,
-                    LumoUtility.BoxSizing.BORDER);
-            name.setPlaceholder("First or last name");
-
-            occupations.setItems("Insurance Clerk", "Mortarman", "Beer Coil Cleaner", "Scale Attendant");
-
-            roles.setItems("Worker", "Supervisor", "Manager", "External");
-            roles.addClassName("double-width");
-
-            // Action buttons
-            Button resetBtn = new Button("Reset");
-            resetBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-            resetBtn.addClickListener(e -> {
-                name.clear();
-                phone.clear();
-                startDate.clear();
-                endDate.clear();
-                occupations.clear();
-                roles.clear();
-                onSearch.run();
-            });
-            Button searchBtn = new Button("Search");
-            searchBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            searchBtn.addClickListener(e -> onSearch.run());
-
-            Div actions = new Div(resetBtn, searchBtn);
-            actions.addClassName(LumoUtility.Gap.SMALL);
-            actions.addClassName("actions");
-
-            add(name, phone, createDateRangeFilter(), occupations, roles, actions);
+            })).setHeader("Aktion").setAutoWidth(true);
         }
 
-        private Component createDateRangeFilter() {
-            startDate.setPlaceholder("From");
-
-            endDate.setPlaceholder("To");
-
-            // For screen readers
-            startDate.setAriaLabel("From date");
-            endDate.setAriaLabel("To date");
-
-            FlexLayout dateRangeComponent = new FlexLayout(startDate, new Text(" – "), endDate);
-            dateRangeComponent.setAlignItems(FlexComponent.Alignment.BASELINE);
-            dateRangeComponent.addClassName(LumoUtility.Gap.XSMALL);
-
-            return dateRangeComponent;
-        }
-
-        @Override
-        public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (!name.isEmpty()) {
-                String lowerCaseFilter = name.getValue().toLowerCase();
-                Predicate firstNameMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("firstName")),
-                        lowerCaseFilter + "%");
-                Predicate lastNameMatch = criteriaBuilder.like(criteriaBuilder.lower(root.get("lastName")),
-                        lowerCaseFilter + "%");
-                predicates.add(criteriaBuilder.or(firstNameMatch, lastNameMatch));
-            }
-            if (!phone.isEmpty()) {
-                String databaseColumn = "phone";
-                String ignore = "- ()";
-
-                String lowerCaseFilter = ignoreCharacters(ignore, phone.getValue().toLowerCase());
-                Predicate phoneMatch = criteriaBuilder.like(
-                        ignoreCharacters(ignore, criteriaBuilder, criteriaBuilder.lower(root.get(databaseColumn))),
-                        "%" + lowerCaseFilter + "%");
-                predicates.add(phoneMatch);
-
-            }
-            if (startDate.getValue() != null) {
-                String databaseColumn = "dateOfBirth";
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get(databaseColumn),
-                        criteriaBuilder.literal(startDate.getValue())));
-            }
-            if (endDate.getValue() != null) {
-                String databaseColumn = "dateOfBirth";
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(criteriaBuilder.literal(endDate.getValue()),
-                        root.get(databaseColumn)));
-            }
-            if (!occupations.isEmpty()) {
-                String databaseColumn = "occupation";
-                List<Predicate> occupationPredicates = new ArrayList<>();
-                for (String occupation : occupations.getValue()) {
-                    occupationPredicates
-                            .add(criteriaBuilder.equal(criteriaBuilder.literal(occupation), root.get(databaseColumn)));
+        DataProvider<Order, Void> dataProvider = DataProvider.fromCallbacks(
+                query -> {
+                    query.getOffset();
+                    query.getLimit();
+                    Stream<Order> ordersStream = orderService.list(PageRequest.of(0, Integer.MAX_VALUE))
+                            .getContent().stream();
+                    if (currentUser.get().isPresent() && !currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+                        ordersStream = ordersStream.filter(order -> order.getUser().equals(currentUser.get().get()));
+                    }
+                    return ordersStream.filter(completed ? order -> order.getState() == OrderState.ORDER_DONE :
+                            order -> order.getState() != OrderState.ORDER_DONE);
+                },
+                query -> {
+                    query.getOffset();
+                    query.getLimit();
+                    Stream<Order> ordersStream = orderService.list(PageRequest.of(0, Integer.MAX_VALUE))
+                            .getContent().stream();
+                    if (currentUser.get().isPresent() && !currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+                        ordersStream = ordersStream.filter(order -> order.getUser().equals(currentUser.get().get()));
+                    }
+                    return (int) ordersStream.filter(completed ? order -> order.getState() == OrderState.ORDER_DONE :
+                            order -> order.getState() != OrderState.ORDER_DONE).count();
                 }
-                predicates.add(criteriaBuilder.or(occupationPredicates.toArray(Predicate[]::new)));
-            }
-            if (!roles.isEmpty()) {
-                String databaseColumn = "role";
-                List<Predicate> rolePredicates = new ArrayList<>();
-                for (String role : roles.getValue()) {
-                    rolePredicates.add(criteriaBuilder.equal(criteriaBuilder.literal(role), root.get(databaseColumn)));
-                }
-                predicates.add(criteriaBuilder.or(rolePredicates.toArray(Predicate[]::new)));
-            }
-            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
-        }
-
-        private String ignoreCharacters(String characters, String in) {
-            String result = in;
-            for (int i = 0; i < characters.length(); i++) {
-                result = result.replace("" + characters.charAt(i), "");
-            }
-            return result;
-        }
-
-        private Expression<String> ignoreCharacters(String characters, CriteriaBuilder criteriaBuilder,
-                Expression<String> inExpression) {
-            Expression<String> expression = inExpression;
-            for (int i = 0; i < characters.length(); i++) {
-                expression = criteriaBuilder.function("replace", String.class, expression,
-                        criteriaBuilder.literal(characters.charAt(i)), criteriaBuilder.literal(""));
-            }
-            return expression;
-        }
-
-    }
-
-    private Component createGrid() {
-        grid = new Grid<>(User.class, false);
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("email").setAutoWidth(true);
-        grid.addColumn("phone").setAutoWidth(true);
-        grid.addColumn("dateOfBirth").setAutoWidth(true);
-        grid.addColumn("occupation").setAutoWidth(true);
-        grid.addColumn("role").setAutoWidth(true);
-
-        grid.setItems(query -> userService.list(
-                PageRequest.of(query.getPage(), query.getPageSize(), VaadinSpringDataHelpers.toSpringDataSort(query)),
-                filters).stream());
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.addClassNames(LumoUtility.Border.TOP, LumoUtility.BorderColor.CONTRAST_10);
+        );
+        grid.setDataProvider(dataProvider);
 
         return grid;
     }
 
-    private void refreshGrid() {
-        grid.getDataProvider().refreshAll();
+    private void showEditDialog(Order order) {
+        Dialog dialog = new Dialog();
+        ComboBox<OrderState> stateComboBox = new ComboBox<>("Status ändern", OrderState.values());
+        stateComboBox.setValue(order.getState());
+        Button saveButton = new Button("Speichern", e -> {
+            OrderState oldState = order.getState();
+            OrderState newState = stateComboBox.getValue();
+            order.setState(newState);
+            orderService.update(order);
+            dialog.close();
+            if (oldState != newState && (newState == OrderState.ORDER_DONE || oldState == OrderState.ORDER_DONE)) {
+                refreshGrids();
+            } else {
+                currentOrdersGrid.getDataProvider().refreshItem(order);
+            }
+        });
+        dialog.add(stateComboBox, saveButton);
+        dialog.open();
     }
 
+    private void refreshGrids() {
+        currentOrdersGrid.getDataProvider().refreshAll();
+        completedOrdersGrid.getDataProvider().refreshAll();
+    }
 }
