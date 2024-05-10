@@ -28,24 +28,29 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
 
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import mci.softwareengineering2.group2.views.MainLayout;
 import mci.softwareengineering2.group2.views.dashboard.ServiceHealth.Status;
 
 @PageTitle("Report")
 @Route(value = "report", layout = MainLayout.class)
 @RouteAlias(value = "report", layout = MainLayout.class)
-@PermitAll
+@RolesAllowed("ADMIN")
 public class DashboardView extends Main {
 
     public DashboardView() {
         addClassName("dashboard-view");
 
         Board board = new Board();
-        board.addRow(createHighlight("Current users", "745", 33.7), createHighlight("View events", "54.6k", -112.45),
-                createHighlight("Conversion rate", "18%", 3.9), createHighlight("Custom metric", "-123.45", 0.0));
+        board.addRow(createHighlight("Aktive Kunden", "2.378", 21.30), createHighlight("Bestellungen*", "1.110", 10.75),
+                createHighlight("Umsatz*", "€ 11.098,76", 3.9));
+        String explanationText = "   * Anzeige bezieht sich auf die aktuelle Periode. Änderungen in % beziehen sich auf die Vorperiode.";
+        Span explanationSpan = new Span(explanationText);
+        explanationSpan.getStyle().set("font-size", "small");
         board.addRow(createViewEvents());
-        board.addRow(createServiceHealth(), createResponseTimes());
+        board.addRow(createAnzahlEssenverkauft());
         add(board);
+        add(explanationSpan);
     }
 
     private Component createHighlight(String title, String value, Double percentage) {
@@ -84,14 +89,13 @@ public class DashboardView extends Main {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Component createViewEvents() {
-        // Header
-        
-        Select year = new Select();
-        year.setItems("2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021");
-        year.setValue("2021");
-        year.setWidth("100px");
 
-        HorizontalLayout header = createHeader("View events", "City/month");
+        Select year = new Select();
+        year.setItems("2022", "2023", "2024");
+//        year.setValue("2024");
+//        year.setWidth("100px");
+
+        HorizontalLayout header = createHeader("Umsatz", "Jahresverlauf");
         header.add(year);
 
         // Chart
@@ -100,20 +104,19 @@ public class DashboardView extends Main {
         conf.getChart().setStyledMode(true);
 
         XAxis xAxis = new XAxis();
-        xAxis.setCategories("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+        xAxis.setCategories("Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez");
         conf.addxAxis(xAxis);
 
-        conf.getyAxis().setTitle("Values");
+        conf.getyAxis().setTitle("Umsatz in €");
 
         PlotOptionsAreaspline plotOptions = new PlotOptionsAreaspline();
         plotOptions.setPointPlacement(PointPlacement.ON);
         plotOptions.setMarker(new Marker(false));
         conf.addPlotOptions(plotOptions);
 
-        conf.addSeries(new ListSeries("Berlin", 189, 191, 291, 396, 501, 403, 609, 712, 729, 942, 1044, 1247));
-        conf.addSeries(new ListSeries("London", 138, 246, 248, 348, 352, 353, 463, 573, 778, 779, 885, 887));
-        conf.addSeries(new ListSeries("New York", 65, 65, 166, 171, 293, 302, 308, 317, 427, 429, 535, 636));
-        conf.addSeries(new ListSeries("Tokyo", 0, 11, 17, 123, 130, 142, 248, 349, 452, 454, 458, 462));
+        conf.addSeries(new ListSeries("Umsatz/Monat 2022", 2001.23, 7503.67, 8205.89, 8907.45, 9509.11, 10011.79, 10513.31, 11015.47, 11517.89, 8532.65, 9123.78, 10456.21));
+        conf.addSeries(new ListSeries("Umsatz/Monat 2023", 1372.25, 7989.43, 9376.89, 9812.34, 10543.22, 8876.55, 5327.56, 9234.67, 9765.89, 10567.32, 8923.45, 10876.90));
+        conf.addSeries(new ListSeries("Umsatz/Monat 2024", 2378.23, 8176.34, 9543.21, 10123.67, (11098.76/2)));
 
         // Add it all together
         VerticalLayout viewEvents = new VerticalLayout(header, chart);
@@ -124,44 +127,56 @@ public class DashboardView extends Main {
         return viewEvents;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Component createServiceHealth() {
         // Header
-        HorizontalLayout header = createHeader("Service health", "Input / output");
+//        Select<String> yearSelect = new Select<>();
+//        yearSelect.setItems("2023", "2024");
+//        yearSelect.setValue("2024");
+//        yearSelect.setWidth("100px");
+//
+//        HorizontalLayout header = createHeader("Umsatz", "Jahresverlauf");
+//        header.add(yearSelect);
+//
+//        // Chart
+//        Chart chart = new Chart(ChartType.AREASPLINE);
+//        Configuration config = chart.getConfiguration();
+//        config.getChart().setStyledMode(true);
+//
+//        XAxis xAxis = new XAxis();
+//        xAxis.setCategories("Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez");
+//        config.addxAxis(xAxis);
+//
+//        config.getyAxis().setTitle("Umsatz in €");
+//
+//        PlotOptionsAreaspline plotOptions = new PlotOptionsAreaspline();
+//        plotOptions.setPointPlacement(PointPlacement.ON);
+//        plotOptions.setMarker(new Marker(false));
+//        config.addPlotOptions(plotOptions);
+//
+//        yearSelect.addValueChangeListener(event -> {
+//            String selectedYear = event.getValue();
+//            Configuration chartConfig = chart.getConfiguration();
+////            chartConfig.getSeries().clear();
+//            if (selectedYear.equals("2022")) {
+//                chartConfig.addSeries(new ListSeries("Umsatz/Monat 2022", 2001.23, 7503.67, 8205.89, 8907.45, 9509.11, 10011.79, 10513.31, 11015.47, 11517.89, 8532.65, 9123.78, 10456.21));
+//           } else if (selectedYear.equals("2023")) {
+//                chartConfig.addSeries(new ListSeries("Umsatz/Monat 2023", 1372.25, 7989.43, 9376.89, 9812.34, 10543.22, 8876.55, 5327.56, 9234.67, 9765.89, 10567.32, 8923.45, 10876.90));
+//            } else if (selectedYear.equals("2024")){
+//                chartConfig.addSeries(new ListSeries("Umsatz/Monat 2024", 2378.23, 8176.34, 9543.21, 10123.67, (11098.76 / 2)));
+//            } else {
+//                throw new IllegalArgumentException("Unknown year: " + selectedYear);
+//        });
+//
+//        // Add it all together
+//        VerticalLayout viewEvents = new VerticalLayout(header, chart);
+//        viewEvents.addClassName(Padding.LARGE);
+//        viewEvents.setPadding(false);
+//        viewEvents.setSpacing(false);
+//        viewEvents.getElement().getThemeList().add("spacing-l");
+//        return viewEvents;
+//    }
 
-        // Grid
-        Grid<ServiceHealth> grid = new Grid();
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.setAllRowsVisible(true);
-
-        grid.addColumn(new ComponentRenderer<>(serviceHealth -> {
-            Span status = new Span();
-            String statusText = getStatusDisplayName(serviceHealth);
-            status.getElement().setAttribute("aria-label", "Status: " + statusText);
-            status.getElement().setAttribute("title", "Status: " + statusText);
-            status.getElement().getThemeList().add(getStatusTheme(serviceHealth));
-            return status;
-        })).setHeader("").setFlexGrow(0).setAutoWidth(true);
-        grid.addColumn(ServiceHealth::getCity).setHeader("City").setFlexGrow(1);
-        grid.addColumn(ServiceHealth::getInput).setHeader("Input").setAutoWidth(true).setTextAlign(ColumnTextAlign.END);
-        grid.addColumn(ServiceHealth::getOutput).setHeader("Output").setAutoWidth(true)
-                .setTextAlign(ColumnTextAlign.END);
-
-        grid.setItems(new ServiceHealth(Status.EXCELLENT, "Münster", 324, 1540),
-                new ServiceHealth(Status.OK, "Cluj-Napoca", 311, 1320),
-                new ServiceHealth(Status.FAILING, "Ciudad Victoria", 300, 1219));
-
-        // Add it all together
-        VerticalLayout serviceHealth = new VerticalLayout(header, grid);
-        serviceHealth.addClassName(Padding.LARGE);
-        serviceHealth.setPadding(false);
-        serviceHealth.setSpacing(false);
-        serviceHealth.getElement().getThemeList().add("spacing-l");
-        return serviceHealth;
-    }
-
-    private Component createResponseTimes() {
-        HorizontalLayout header = createHeader("Response times", "Average across all systems");
+    private Component createAnzahlEssenverkauft() {
+        HorizontalLayout header = createHeader("Bestellungen", "Prozentuelle Verteilung");
 
         // Chart
         Chart chart = new Chart(ChartType.PIE);
@@ -170,12 +185,11 @@ public class DashboardView extends Main {
         chart.setThemeName("gradient");
 
         DataSeries series = new DataSeries();
-        series.add(new DataSeriesItem("System 1", 12.5));
-        series.add(new DataSeriesItem("System 2", 12.5));
-        series.add(new DataSeriesItem("System 3", 12.5));
-        series.add(new DataSeriesItem("System 4", 12.5));
-        series.add(new DataSeriesItem("System 5", 12.5));
-        series.add(new DataSeriesItem("System 6", 12.5));
+        series.add(new DataSeriesItem("Grillhendl+Kartoffelsalat", 33.7));
+        series.add(new DataSeriesItem("Wiener Schnitzel", 27.72));
+        series.add(new DataSeriesItem("Pizza Diavolo", 7.33));
+        series.add(new DataSeriesItem("Pizza Americano", 17.35));
+        series.add(new DataSeriesItem("Insalata Verde", 13.9));
         conf.addSeries(series);
 
         // Add it all together
