@@ -5,8 +5,11 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.Background;
@@ -44,6 +47,7 @@ public class SpeisekarteComponent extends ListItem {
         private Span amount;
         SpeisekarteComponent(Meal meal,Cart cart,AuthenticatedUser currentUser, MealService mealService) {
 
+                //addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
                 addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
                                 Padding.MEDIUM,
                                 BorderRadius.LARGE);
@@ -59,33 +63,35 @@ public class SpeisekarteComponent extends ListItem {
                 image.setSrc((meal.getPicture() == null || meal.getPicture() != null && meal.getPicture().length() == 0) ? defaultString : meal.getPicture());
 
                 div.add(image);
-
+                
+                HorizontalLayout editLayout = new HorizontalLayout();
+                editLayout.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
+                                Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
                 // Als Admin wird ein Button zum Löschen und editieren der Speise hinzugefügt
                 if (currentUser.get().get().getRoles().contains(Role.ADMIN)) {
-              
-                        VerticalLayout buttonLayout = new VerticalLayout();
-                        Button delete = new Button();
+                        Button delete = new Button(new Icon(VaadinIcon.FILE_REMOVE));
                         delete.setText("Speise Löschen");
                         delete.addClickListener(event -> {
                                 delSpeisenDialog.delSpeisenDialog(meal, mealService);
                                 delSpeisenDialog.open();
                         });
 
-                        Button edit = new Button();
+                        Button edit = new Button(new Icon(VaadinIcon.EDIT));
                         edit.setText("Speise Bearbeiten");
                         edit.addClickListener(event -> {
                                 editSpeisenDialog.editSpeisenDialog(meal, mealService);
                                 editSpeisenDialog.open();
                         });
 
-                        Button add = new Button();
+                        Button add = new Button(new Icon(VaadinIcon.FILE_ADD));
                         add.setText("Neue Speise");
                         add.addClickListener(event -> {
                                 addSpeisenDialog.addSpeisenDialog(mealService);
                                 addSpeisenDialog.open();
                         });
-                        buttonLayout.add(delete, edit, add);
-                        div.add(buttonLayout);
+                        editLayout.add(delete, edit, add);
+                        editLayout.setWidth(defaultWidthDiv);
+                        editLayout.setAlignItems(Alignment.STRETCH);
                 }
                 
                 HorizontalLayout headerLayout = new HorizontalLayout();
@@ -140,7 +146,7 @@ public class SpeisekarteComponent extends ListItem {
                 layout.add(new Span());
                 layout.add(add);
 
-                add(div, headerLayout, subtitle,layout);
+                add(editLayout, div, headerLayout, subtitle,layout);
         }
 
         // Um eine neue Speise durch den Administrator hinzufügen zu können, 

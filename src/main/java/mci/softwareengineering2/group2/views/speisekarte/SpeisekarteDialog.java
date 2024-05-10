@@ -1,6 +1,8 @@
 package mci.softwareengineering2.group2.views.speisekarte;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -34,9 +36,6 @@ public class SpeisekarteDialog extends Dialog {
         this.removeAll();
         
         if (meal != null) {
-            addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
-                    Padding.MEDIUM, BorderRadius.LARGE);
-
             Div div = new Div();
             div.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
                             Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
@@ -135,9 +134,6 @@ public class SpeisekarteDialog extends Dialog {
         this.removeAll();
         Meal meal = new Meal();
 
-        addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
-                Padding.MEDIUM, BorderRadius.LARGE);
-
         Div div = new Div();
         div.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
                         Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
@@ -229,10 +225,6 @@ public class SpeisekarteDialog extends Dialog {
 
     public void delSpeisenDialog(Meal meal, MealService mealService) {
         this.removeAll();
-
-        addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
-                Padding.MEDIUM, BorderRadius.LARGE);
-
         HorizontalLayout headerLayout = new HorizontalLayout();
         
         Span subtitle = new Span();
