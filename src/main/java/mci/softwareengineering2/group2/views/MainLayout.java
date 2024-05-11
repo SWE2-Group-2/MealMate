@@ -6,6 +6,7 @@ import mci.softwareengineering2.group2.services.AddressService;
 import mci.softwareengineering2.group2.services.UserService;
 import mci.softwareengineering2.group2.views.accountmanagement.AccountManipulationDialog;
 import mci.softwareengineering2.group2.views.bestellungen.BestellungenView;
+import mci.softwareengineering2.group2.views.dashboard.DashboardView;
 import mci.softwareengineering2.group2.views.speisekarte.SpeisekarteView;
 import mci.softwareengineering2.group2.views.warenkorb.WarenkorbView;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -86,14 +87,22 @@ public class MainLayout extends AppLayout {
                     LineAwesomeIcon.UTENSIL_SPOON_SOLID.create()));
 
         }
+
         if (accessChecker.hasAccess(WarenkorbView.class)) {
             nav.addItem(new SideNavItem("Warenkorb", WarenkorbView.class, LineAwesomeIcon.CREDIT_CARD.create()));
 
         }
+
+
         if (accessChecker.hasAccess(BestellungenView.class)) {
             nav.addItem(new SideNavItem("Bestellungen", BestellungenView.class, LineAwesomeIcon.FILTER_SOLID.create()));
         }
 
+        if (accessChecker.hasAccess(DashboardView.class)) {
+            nav.addItem(new SideNavItem("Report", DashboardView.class,
+                    LineAwesomeIcon.CHART_LINE_SOLID.create()));
+
+        }
         return nav;
     }
 

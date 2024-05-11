@@ -1,6 +1,7 @@
 package mci.softwareengineering2.group2;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
@@ -23,11 +24,18 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 @Theme(value = "mealmate", variant = Lumo.DARK)
+@PWA(
+        name = "VaadinCRM",
+        shortName = "CRM",
+        offlinePath="offline.html",
+        offlineResources = { "./images/offline.png"}
+)
 public class Application implements AppShellConfigurator {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
+
 
     @Bean
     SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(DataSource dataSource,
