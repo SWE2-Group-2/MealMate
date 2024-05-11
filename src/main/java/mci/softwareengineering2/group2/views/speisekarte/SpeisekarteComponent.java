@@ -66,7 +66,7 @@ public class SpeisekarteComponent extends ListItem {
                 
                 HorizontalLayout editLayout = new HorizontalLayout();
                 editLayout.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
-                                Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
+                                Margin.Top.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
                 // Als Admin wird ein Button zum Löschen und editieren der Speise hinzugefügt
                 if (currentUser.get().get().getRoles().contains(Role.ADMIN)) {
                         Button delete = new Button(new Icon(VaadinIcon.FILE_REMOVE));
@@ -139,14 +139,15 @@ public class SpeisekarteComponent extends ListItem {
                 add.addClickListener(event -> {
                         cart.getMeals().add(meal);
                 });
+                if (!currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+                        layout.add(decreas);
+                        layout.add(amount);
+                        layout.add(increas);
+                        layout.add(new Span());
+                        layout.add(add);
+                }
 
-                layout.add(decreas);
-                layout.add(amount);
-                layout.add(increas);
-                layout.add(new Span());
-                layout.add(add);
-
-                add(editLayout, div, headerLayout, subtitle,layout);
+                add(div, headerLayout, subtitle,layout,editLayout);
         }
 
         // Um eine neue Speise durch den Administrator hinzufügen zu können, 

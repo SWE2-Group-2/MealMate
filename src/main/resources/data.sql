@@ -103,6 +103,22 @@ WHERE
             id = 1
     );
 
+--Meal Categories
+INSERT INTO category_table (id, name, version)
+    SELECT 0, 'Alle', 1 WHERE NOT EXISTS (SELECT * FROM category_table WHERE id = 0);
+
+INSERT INTO category_table (id, name, version)
+    SELECT 1, 'Österreichische Küche', 1 WHERE NOT EXISTS (SELECT * FROM category_table WHERE id = 1);
+
+INSERT INTO category_table (id, name, version)
+    SELECT 2, 'Italienisch', 1 WHERE NOT EXISTS (SELECT * FROM category_table WHERE id = 2);
+
+INSERT INTO category_table (id, name, version)
+    SELECT 3, 'Griechisch', 1  WHERE NOT EXISTS (SELECT * FROM category_table WHERE id = 3);
+
+INSERT INTO category_table (id, name, version) 
+    SELECT 999, 'Angebote', 1 WHERE  NOT EXISTS (SELECT * FROM category_table WHERE id = 999);
+
 --Default meals
 INSERT INTO
     meal_table (
@@ -237,11 +253,11 @@ INSERT INTO
     )
 SELECT
     5,
-    'Insalata Verde',
+    'Caesar Salat',
     1,
     '',
-    'Grüner Salat',
-    6.50,
+    'Grüner Salat mit Schafskäse',
+    8.50,
     'https://imgs.search.brave.com/XevDMjSiFxTlCYlAAiAU-BCzr7JZRv3LkBN46PReUYE/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMwMS5ueXQuY29t/L2ltYWdlcy8yMDE5/LzEyLzExL2Rpbmlu/Zy8xMW1hZy1lYXQt/MS8xMm1hZy1lYXQt/MS1hcnRpY2xlTGFy/Z2UtdjIucG5nP3dp/ZHRoPTEyODAmcXVh/bGl0eT03NSZhdXRv/PXdlYnA',
     1
 WHERE
@@ -253,6 +269,28 @@ WHERE
         WHERE
             id = 5
     );
+
+--Normalization Categorie - Meal
+INSERT INTO category_meal (category_id, meal_id) 
+    SELECT 1, 1 WHERE NOT EXISTS (SELECT * FROM category_meal WHERE category_id = 1 AND meal_id = 1);  
+
+INSERT INTO category_meal (category_id, meal_id) 
+    SELECT 999, 1 WHERE NOT EXISTS (SELECT * FROM category_meal WHERE category_id = 999 AND meal_id = 1);  
+
+INSERT INTO category_meal (category_id, meal_id) 
+    SELECT 1, 2 WHERE NOT EXISTS (SELECT * FROM category_meal WHERE category_id = 1 AND meal_id = 2);  
+
+INSERT INTO category_meal (category_id, meal_id) 
+    SELECT 2, 3 WHERE NOT EXISTS (SELECT * FROM category_meal WHERE category_id = 2 AND meal_id = 3);  
+
+INSERT INTO category_meal (category_id, meal_id) 
+    SELECT 2, 4 WHERE NOT EXISTS (SELECT * FROM category_meal WHERE category_id = 2 AND meal_id = 4);  
+
+INSERT INTO category_meal (category_id, meal_id) 
+    SELECT 3, 5 WHERE NOT EXISTS (SELECT * FROM category_meal WHERE category_id = 3 AND meal_id = 5);  
+
+INSERT INTO category_meal (category_id, meal_id) 
+    SELECT 999, 5 WHERE NOT EXISTS (SELECT * FROM category_meal WHERE category_id = 999 AND meal_id = 5);  
 
 
 INSERT INTO order_table (id, user_id, start_date, state, version)
