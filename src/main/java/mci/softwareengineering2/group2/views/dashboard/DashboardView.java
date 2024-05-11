@@ -32,6 +32,10 @@ import jakarta.annotation.security.RolesAllowed;
 import mci.softwareengineering2.group2.views.MainLayout;
 import mci.softwareengineering2.group2.views.dashboard.ServiceHealth.Status;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @PageTitle("Report")
 @Route(value = "report", layout = MainLayout.class)
 @RouteAlias(value = "report", layout = MainLayout.class)
@@ -89,34 +93,59 @@ public class DashboardView extends Main {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Component createViewEvents() {
-
-        Select year = new Select();
-        year.setItems("2022", "2023", "2024");
-//        year.setValue("2024");
-//        year.setWidth("100px");
+        // Header
+        Select<String> yearSelect = new Select<>();
+        yearSelect.setItems("2022", "2023", "2024");
+        yearSelect.setValue("2024");
+        yearSelect.setWidth("100px");
 
         HorizontalLayout header = createHeader("Umsatz", "Jahresverlauf");
-        header.add(year);
+        header.add(yearSelect);
 
         // Chart
         Chart chart = new Chart(ChartType.AREASPLINE);
-        Configuration conf = chart.getConfiguration();
-        conf.getChart().setStyledMode(true);
+        Configuration config = chart.getConfiguration();
+        config.getChart().setStyledMode(true);
 
         XAxis xAxis = new XAxis();
         xAxis.setCategories("Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez");
-        conf.addxAxis(xAxis);
+        config.addxAxis(xAxis);
 
-        conf.getyAxis().setTitle("Umsatz in €");
+        config.getyAxis().setTitle("Umsatz in €");
 
         PlotOptionsAreaspline plotOptions = new PlotOptionsAreaspline();
         plotOptions.setPointPlacement(PointPlacement.ON);
         plotOptions.setMarker(new Marker(false));
-        conf.addPlotOptions(plotOptions);
+        plotOptions.setConnectNulls(true); // Hier wird die Verbindung der Nullwerte aktiviert
+        config.addPlotOptions(plotOptions);
 
-        conf.addSeries(new ListSeries("Umsatz/Monat 2022", 2001.23, 7503.67, 8205.89, 8907.45, 9509.11, 10011.79, 10513.31, 11015.47, 11517.89, 8532.65, 9123.78, 10456.21));
-        conf.addSeries(new ListSeries("Umsatz/Monat 2023", 1372.25, 7989.43, 9376.89, 9812.34, 10543.22, 8876.55, 5327.56, 9234.67, 9765.89, 10567.32, 8923.45, 10876.90));
-        conf.addSeries(new ListSeries("Umsatz/Monat 2024", 2378.23, 8176.34, 9543.21, 10123.67, (11098.76/2)));
+        ListSeries series2022 = new ListSeries("Umsatz/Monat 2022", 2001.23, 7503.67, 8205.89, 8907.45, 9509.11, 10011.79, 10513.31, 11015.47, 11517.89, 8532.65, 9123.78, 10456.21);
+        ListSeries series2023 = new ListSeries("Umsatz/Monat 2023", 1372.25, 7989.43, 9376.89, 9812.34, 10543.22, 8876.55, 5327.56, 9234.67, 9765.89, 10567.32, 8923.45, 10876.90);
+        ListSeries series2024 = new ListSeries("Umsatz/Monat 2024", 2378.23, 8176.34, 9543.21, 10123.67, (11098.76 / 2));
+
+        // Füge die Serien zur Konfiguration hinzu
+        config.setSeries(series2022, series2023, series2024);
+
+        // Füge die Serien zur Liste hinzu
+        List<ListSeries> seriesList = Arrays.asList(series2022, series2023, series2024);
+
+        yearSelect.addValueChangeListener(event -> {
+            String selectedYear = event.getValue();
+
+            // Loop über alle Serien
+            for (ListSeries series : seriesList) {
+                if (series.getName().contains(selectedYear)) {
+                    // Wenn das Jahr ausgewählt wurde, ändere die Sichtbarkeit der Serie
+                    series.setVisible(!series.isVisible());
+                }
+            }
+
+            // Update legend visibility
+            config.getLegend().setEnabled(seriesList.stream().anyMatch(ListSeries::isVisible));
+
+            // Redraw the chart
+            chart.drawChart();
+        });
 
         // Add it all together
         VerticalLayout viewEvents = new VerticalLayout(header, chart);
@@ -127,53 +156,6 @@ public class DashboardView extends Main {
         return viewEvents;
     }
 
-        // Header
-//        Select<String> yearSelect = new Select<>();
-//        yearSelect.setItems("2023", "2024");
-//        yearSelect.setValue("2024");
-//        yearSelect.setWidth("100px");
-//
-//        HorizontalLayout header = createHeader("Umsatz", "Jahresverlauf");
-//        header.add(yearSelect);
-//
-//        // Chart
-//        Chart chart = new Chart(ChartType.AREASPLINE);
-//        Configuration config = chart.getConfiguration();
-//        config.getChart().setStyledMode(true);
-//
-//        XAxis xAxis = new XAxis();
-//        xAxis.setCategories("Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez");
-//        config.addxAxis(xAxis);
-//
-//        config.getyAxis().setTitle("Umsatz in €");
-//
-//        PlotOptionsAreaspline plotOptions = new PlotOptionsAreaspline();
-//        plotOptions.setPointPlacement(PointPlacement.ON);
-//        plotOptions.setMarker(new Marker(false));
-//        config.addPlotOptions(plotOptions);
-//
-//        yearSelect.addValueChangeListener(event -> {
-//            String selectedYear = event.getValue();
-//            Configuration chartConfig = chart.getConfiguration();
-////            chartConfig.getSeries().clear();
-//            if (selectedYear.equals("2022")) {
-//                chartConfig.addSeries(new ListSeries("Umsatz/Monat 2022", 2001.23, 7503.67, 8205.89, 8907.45, 9509.11, 10011.79, 10513.31, 11015.47, 11517.89, 8532.65, 9123.78, 10456.21));
-//           } else if (selectedYear.equals("2023")) {
-//                chartConfig.addSeries(new ListSeries("Umsatz/Monat 2023", 1372.25, 7989.43, 9376.89, 9812.34, 10543.22, 8876.55, 5327.56, 9234.67, 9765.89, 10567.32, 8923.45, 10876.90));
-//            } else if (selectedYear.equals("2024")){
-//                chartConfig.addSeries(new ListSeries("Umsatz/Monat 2024", 2378.23, 8176.34, 9543.21, 10123.67, (11098.76 / 2)));
-//            } else {
-//                throw new IllegalArgumentException("Unknown year: " + selectedYear);
-//        });
-//
-//        // Add it all together
-//        VerticalLayout viewEvents = new VerticalLayout(header, chart);
-//        viewEvents.addClassName(Padding.LARGE);
-//        viewEvents.setPadding(false);
-//        viewEvents.setSpacing(false);
-//        viewEvents.getElement().getThemeList().add("spacing-l");
-//        return viewEvents;
-//    }
 
     private Component createAnzahlEssenverkauft() {
         HorizontalLayout header = createHeader("Bestellungen", "Prozentuelle Verteilung");
