@@ -14,12 +14,20 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.TabSheet;
+import com.vaadin.flow.component.tabs.Tabs;
+import com.vaadin.flow.component.textfield.TextField;
+
 import jakarta.annotation.security.PermitAll;
 import mci.softwareengineering2.group2.data.Cart;
 import mci.softwareengineering2.group2.data.Meal;
+import mci.softwareengineering2.group2.data.Role;
+import mci.softwareengineering2.group2.data.Category;
 import mci.softwareengineering2.group2.security.AuthenticatedUser;
 import mci.softwareengineering2.group2.services.CartService;
 import mci.softwareengineering2.group2.services.MealService;
+import mci.softwareengineering2.group2.services.CategoryService;
 import mci.softwareengineering2.group2.views.MainLayout;
 
 @PageTitle("Speisekarte")
@@ -32,10 +40,16 @@ public class SpeisekarteView extends HorizontalLayout {
     private Cart userCart = null;
     private CartDialog cartDialog = null;
 
-    public SpeisekarteView(MealService mealService,CartService cartService,AuthenticatedUser currentUser) {
+    public SpeisekarteView(MealService mealService,CartService cartService,CategoryService categoryService, AuthenticatedUser currentUser) {
 
         //Todo add the tabs like teh design shows it 
+        Tabs tabs = new Tabs();
+        tabs.setWidth("100%");
+        setTabsCategories(categoryService, tabs);
+        VerticalLayout tabsLayout = new VerticalLayout();
 
+        //Page<Category> allCategories = categoryService.list(Pageable.unpaged());
+        //List<Category> categoryList = allCategories.get().toList();
         Page<Meal> allMeals = mealService.list(Pageable.unpaged());
         List<Meal> mealList = allMeals.get().toList();
         Page<Cart> carts = cartService.list(Pageable.unpaged());
@@ -68,33 +82,70 @@ public class SpeisekarteView extends HorizontalLayout {
             }
             i++;
         }
-
-        // Neue Speise hinzufügen nur als Admin sichtbar
-        // Jetzt als Dialog Verfügbar SpeisenDialog.addSpeisenDialog(mealService);
-        /*
-        if (currentUser.get().get().getRoles().contains(Role.ADMIN)) {
-            if (i % 2 == 0) {
-                layout.add(new SpeisekarteComponent());
-            } else {
-                layout1.add(new SpeisekarteComponent());
-            }
-        } 
-        */
+        mainLayout.add(layout, layout1);
 
         HorizontalLayout cartLayout = new HorizontalLayout();
-        Button cart = new Button(VaadinIcon.CART_O.create());
-        cart.setHeight("50px");
-        cart.setText("Warenkorb");
-        cartLayout.add(cart);
+        if (!currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+            Button cart = new Button(VaadinIcon.CART_O.create());
+            cart.setHeight("50px");
+            cart.setText("Warenkorb");
+            cartLayout.add(cart);
 
-        cartDialog = new CartDialog();
+            cartDialog = new CartDialog();
+            cart.addClickListener(event -> {
+                cartDialog.generateCart(userCart);
+                cartDialog.open();
+            });
+        }
 
-        cart.addClickListener(event -> {
-            cartDialog.generateCart(userCart);
-            cartDialog.open();
+        tabs.addSelectedChangeListener(event -> {
+            Tab selectedTab = tabs.getSelectedTab();
+            if (selectedTab != null) {
+                String tabName = selectedTab.getLabel();
+                mainLayout.removeAll(); // Clear existing content
+
+                // Add content based on selected tab name
+                if (tabName.equals("Alle")) {
+                    int j = 0;
+                    for (Meal meal : mealList) {
+                        if (j % 2 == 0) {
+                            layout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                        } else {
+                            layout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                        }
+                        j++;
+                    }
+                    mainLayout.add(layout, layout1);
+                    return;
+                }
+                Category category = categoryService.list(Pageable.unpaged()).stream().filter(c -> c.getName().equals(tabName)).findFirst().get();
+                List<Meal> meals = category.getMeals();
+                VerticalLayout categoryLayout = new VerticalLayout();
+                VerticalLayout categoryLayout1 = new VerticalLayout();
+                int j = 0;
+                for (Meal meal : meals) {
+                    if (j % 2 == 0) {
+                        categoryLayout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                    } else {
+                        categoryLayout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                    }
+                    j++;
+                }
+                mainLayout.add(categoryLayout, categoryLayout1);
+            }
         });
 
-        mainLayout.add(layout,layout1,cartLayout);
-        add(mainLayout);
+        tabsLayout.add(tabs,mainLayout);
+        add(tabsLayout);
     }
+
+    // Tabs
+    private void setTabsCategories(CategoryService categoryService, Tabs tabs) {
+        Page<Category> allCategories = categoryService.list(Pageable.unpaged());
+        List<Category> CategoryList = allCategories.get().toList();
+        for (Category category : CategoryList) {
+            tabs.add(new Tab(category.getName()));
+        }
+    }
+
 }
