@@ -76,9 +76,9 @@ public class SpeisekarteView extends HorizontalLayout {
         for (Meal meal : mealList) {
 
             if (i % 2 == 0) {
-                layout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                layout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService, categoryService));
             } else {
-                layout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                layout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService, categoryService));
             }
             i++;
         }
@@ -116,9 +116,9 @@ public class SpeisekarteView extends HorizontalLayout {
                 int j = 0;
                 for (Meal meal : meals) {
                     if (j % 2 == 0) {
-                        categoryLayout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                        categoryLayout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService, categoryService));
                     } else {
-                        categoryLayout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                        categoryLayout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService, categoryService));
                     }
                     j++;
                 }

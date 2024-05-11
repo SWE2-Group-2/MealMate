@@ -29,6 +29,7 @@ import mci.softwareengineering2.group2.data.Cart;
 import mci.softwareengineering2.group2.data.Meal;
 import mci.softwareengineering2.group2.data.Role;
 import mci.softwareengineering2.group2.security.AuthenticatedUser;
+import mci.softwareengineering2.group2.services.CategoryService;
 import mci.softwareengineering2.group2.services.MealService;
 
 public class SpeisekarteComponent extends ListItem {
@@ -39,13 +40,9 @@ public class SpeisekarteComponent extends ListItem {
         private SpeisekarteDialog editSpeisenDialog = new SpeisekarteDialog();
         private SpeisekarteDialog addSpeisenDialog = new SpeisekarteDialog();
         private SpeisekarteDialog delSpeisenDialog = new SpeisekarteDialog();
-        private TextField speisenName;
-        private TextField speisenPreis;
-        private TextField speisenAllergene;
-        private TextField speisenBild;
         private int amountValue = 1;
         private Span amount;
-        SpeisekarteComponent(Meal meal,Cart cart,AuthenticatedUser currentUser, MealService mealService) {
+        SpeisekarteComponent(Meal meal,Cart cart,AuthenticatedUser currentUser, MealService mealService, CategoryService categoryService) {
 
                 //addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
                 addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
@@ -72,21 +69,21 @@ public class SpeisekarteComponent extends ListItem {
                         Button delete = new Button(new Icon(VaadinIcon.FILE_REMOVE));
                         delete.setText("Speise Löschen");
                         delete.addClickListener(event -> {
-                                delSpeisenDialog.delSpeisenDialog(meal, mealService);
+                                delSpeisenDialog.delSpeisenDialog(meal, mealService, categoryService);
                                 delSpeisenDialog.open();
                         });
 
                         Button edit = new Button(new Icon(VaadinIcon.EDIT));
                         edit.setText("Speise Bearbeiten");
                         edit.addClickListener(event -> {
-                                editSpeisenDialog.editSpeisenDialog(meal, mealService);
+                                editSpeisenDialog.editSpeisenDialog(meal, mealService, categoryService);
                                 editSpeisenDialog.open();
                         });
 
                         Button add = new Button(new Icon(VaadinIcon.FILE_ADD));
                         add.setText("Neue Speise");
                         add.addClickListener(event -> {
-                                addSpeisenDialog.addSpeisenDialog(mealService);
+                                addSpeisenDialog.addSpeisenDialog(mealService, categoryService);
                                 addSpeisenDialog.open();
                         });
                         editLayout.add(delete, edit, add);
@@ -149,70 +146,4 @@ public class SpeisekarteComponent extends ListItem {
 
                 add(div, headerLayout, subtitle,layout,editLayout);
         }
-
-        // Um eine neue Speise durch den Administrator hinzufügen zu können, 
-        // bebnötigt es eine leere SpeisekarteComponent mit einem Button und Feldern zum hinzu fügen der Speise
-        SpeisekarteComponent() {
-                addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
-                        Padding.MEDIUM, BorderRadius.LARGE);
-
-                Div div = new Div();
-                div.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
-                                Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
-                div.setHeight(defaultHeightDiv);
-                div.setWidth(defaultWidthDiv);
-                div.addClassNames(FontSize.XLARGE, FontWeight.SEMIBOLD);
-                div.setText("Neue Speise hinzufügen");
-
-                HorizontalLayout headerLayout = new HorizontalLayout();
-               
-                Span subtitle = new Span();
-                subtitle.addClassNames(FontSize.SMALL, TextColor.SECONDARY);
-                subtitle.setText("Bitte füllen Sie die Felder aus");
-
-                HorizontalLayout layout = new HorizontalLayout();
-                HorizontalLayout layout1 = new HorizontalLayout();
-                HorizontalLayout layout2 = new HorizontalLayout();
-                HorizontalLayout layout3 = new HorizontalLayout();
-
-                layout.setWidthFull();
-                layout1.setWidthFull();
-                layout2.setWidthFull();
-                layout3.setWidthFull();
-
-                speisenName = new TextField();
-                speisenName.setLabel("Name für Speise");
-                speisenName.setWidth("50%");                
-                layout.add(speisenName);
-
-                speisenPreis = new TextField();
-                speisenPreis.setLabel("Preis in €");
-                speisenPreis.setWidth("50%");
-                layout.add(speisenPreis);
-                
-                layout.add(new Span());
-
-                speisenAllergene = new TextField();
-                speisenAllergene.setLabel("Allergene");
-                speisenAllergene.setWidth("98%");
-                layout1.add(speisenAllergene);
-
-                speisenBild = new TextField();
-                speisenBild.setLabel("Bild als URL");
-                speisenBild.setWidth("98%");
-                layout2.add(speisenBild);
-                
-                Button add = new Button();
-                add.setText("Erstellen");
-                add.setWidth("93%");
-                add.addClickListener(event -> {
-                        //TODO: Add new meal
-                        getUI().ifPresent(ui -> ui.getPage().reload());
-                });
-                layout3.add(new Span());
-
-                layout3.add(add);
-
-                add(div, headerLayout, subtitle,layout,layout1,layout2,layout3);
-        }       
 }

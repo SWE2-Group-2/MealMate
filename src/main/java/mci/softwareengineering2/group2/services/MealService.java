@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import mci.softwareengineering2.group2.data.Meal;
+import mci.softwareengineering2.group2.data.Category;
 import mci.softwareengineering2.group2.datarepository.MealRepository;
 
 @Service
@@ -32,6 +33,7 @@ private final MealRepository repository;
     }
 
     public void delete(Long id) {
+        
         repository.deleteById(id);
     }
 

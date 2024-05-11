@@ -1,13 +1,23 @@
 package mci.softwareengineering2.group2.views.speisekarte;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import org.hibernate.Hibernate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.listbox.MultiSelectListBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.selection.SelectionModel.Multi;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.Background;
 import com.vaadin.flow.theme.lumo.LumoUtility.BorderRadius;
@@ -22,7 +32,9 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
 import com.vaadin.flow.theme.lumo.LumoUtility.Width;
 
+import mci.softwareengineering2.group2.data.Category;
 import mci.softwareengineering2.group2.data.Meal;
+import mci.softwareengineering2.group2.services.CategoryService;
 import mci.softwareengineering2.group2.services.MealService;
 
 public class SpeisekarteDialog extends Dialog {
@@ -32,7 +44,7 @@ public class SpeisekarteDialog extends Dialog {
     private TextField speisenPreis;
     private TextField speisenAllergene;
     private TextField speisenBild;
-    public void editSpeisenDialog(Meal meal, MealService mealService) {
+    public void editSpeisenDialog(Meal meal, MealService mealService, CategoryService categoryService) {
         this.removeAll();
         
         if (meal != null) {
@@ -90,6 +102,24 @@ public class SpeisekarteDialog extends Dialog {
             speisenBild.setValue(meal.getPicture());
             layout2.add(speisenBild);
             
+            // add a listbox with all categories to choose
+            MultiSelectListBox<String> categoryMultiSelectList = new MultiSelectListBox<>();
+            Page<Category> allCategories = categoryService.list(Pageable.unpaged());
+            List<Category> categoryList = allCategories.get().toList();
+            List<String> listCategories = new ArrayList<String>();
+            List<String> listSelectedCategories = new ArrayList<String>();
+            
+            // GET ERROR HERE
+            //meal.getCategory().forEach(category -> {
+            //    listSelectedCategories.add(category.getName());
+            //});
+            for (Category category : categoryList) {
+                listCategories.add(category.getName());
+            }
+            categoryMultiSelectList.setItems(listCategories);
+            categoryMultiSelectList.select(listSelectedCategories);
+
+
             Button add = new Button();
             add.setText("Ändern");
             add.setWidth("45%");
@@ -110,6 +140,8 @@ public class SpeisekarteDialog extends Dialog {
                     meal.setPrice(Float.parseFloat(speisenPreis.getValue()));
                     meal.setAllergene(speisenAllergene.getValue());
                     meal.setPicture(speisenBild.getValue()); 
+                    // TODO: set categories
+                    //meal.setCategory(categoryList);
                     mealService.update(meal);
                     getUI().ifPresent(ui -> ui.getPage().reload());
                 }
@@ -126,11 +158,11 @@ public class SpeisekarteDialog extends Dialog {
             layout3.add(cancle);
             layout3.add(add);
 
-            add(div, headerLayout, subtitle,layout,layout1,layout2,layout3);
+            add(div, headerLayout, subtitle,layout,layout1,layout2, categoryMultiSelectList, layout3);
         }
     }
 
-    public void addSpeisenDialog(MealService mealService) {
+    public void addSpeisenDialog(MealService mealService, CategoryService categoryService) {
         this.removeAll();
         Meal meal = new Meal();
 
@@ -223,7 +255,7 @@ public class SpeisekarteDialog extends Dialog {
         add(div, headerLayout, subtitle,layout,layout1,layout2,layout3);
     }
 
-    public void delSpeisenDialog(Meal meal, MealService mealService) {
+    public void delSpeisenDialog(Meal meal, MealService mealService, CategoryService categoryService) {
         this.removeAll();
         HorizontalLayout headerLayout = new HorizontalLayout();
         
@@ -250,8 +282,8 @@ public class SpeisekarteDialog extends Dialog {
         add.setText("Löschen");
         add.setWidth("45%");
         add.addClickListener(event -> {
-                mealService.delete(meal.getId());
-                getUI().ifPresent(ui -> ui.getPage().reload());
+            mealService.delete(meal.getId());
+            getUI().ifPresent(ui -> ui.getPage().reload());
         });
         Button cancle = new Button();
         cancle.setText("Abbrechen");

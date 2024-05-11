@@ -4,6 +4,7 @@ import com.vaadin.flow.component.template.Id;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ public class Category extends AbstractEntity{
     @Id
     private Long id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "category_meal",
             joinColumns = @JoinColumn(name = "category_id"),
@@ -58,12 +59,19 @@ public class Category extends AbstractEntity{
         this.name = name;
     }
 
-
+    /** Delete meal from category */
+    public void deleteMeal(Meal meal) {
+        meals.remove(meal);
+    }
+    
     /**
      * Get the meals of a category
      * @return the meals of a category or null
      */
     public List<Meal> getMeals() {
+        if(meals == null){
+            meals = new ArrayList<Meal>();
+        }
         return meals;
     }
 

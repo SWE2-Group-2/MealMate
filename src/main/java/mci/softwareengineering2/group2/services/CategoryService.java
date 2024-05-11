@@ -1,6 +1,7 @@
 package mci.softwareengineering2.group2.services;
 
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,10 @@ private final CategoryRepository repository;
 
     public Page<Category> list(Pageable pageable, Specification<Category> filter) {
         return repository.findAll(filter, pageable);
+    }
+
+    public List<Category> listAll() {
+        return repository.findAll();
     }
 
     public int count() {

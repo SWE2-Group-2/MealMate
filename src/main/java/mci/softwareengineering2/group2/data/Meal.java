@@ -26,6 +26,8 @@ public class Meal extends AbstractEntity{
     private Menue menu;
     @ManyToMany(mappedBy = "meals")
     private List<Order> order;
+    @ManyToMany(mappedBy = "meals")
+    private List<Category> category;
     @Column(length = 500)
     private String picture;
 
@@ -129,8 +131,16 @@ public class Meal extends AbstractEntity{
         return order;
     }
 
+    public List<Category> getCategory() {
+        return category;
+    }
+
     public void setOrder(List<Order> order) {
         this.order = order;
+    }
+
+    public void setCategory(List<Category> category) {
+        this.category = category;
     }
 
     /**
