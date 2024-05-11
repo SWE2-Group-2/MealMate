@@ -103,6 +103,7 @@ public class SpeisekarteDialog extends Dialog {
             layout2.add(speisenBild);
             
             // add a listbox with all categories to choose
+            HorizontalLayout layoutListBox = new HorizontalLayout();
             MultiSelectListBox<String> categoryMultiSelectList = new MultiSelectListBox<>();
             Page<Category> allCategories = categoryService.list(Pageable.unpaged());
             List<Category> categoryList = allCategories.get().toList();
@@ -110,15 +111,20 @@ public class SpeisekarteDialog extends Dialog {
             List<String> listSelectedCategories = new ArrayList<String>();
             
             // GET ERROR HERE
-            //meal.getCategory().forEach(category -> {
-            //    listSelectedCategories.add(category.getName());
-            //});
+            List<Category> categoryListSelected = meal.getCategory();
+            
+
+            //for (Category category : categoryListSelected) {
+                //listSelectedCategories.add(category.getName());
+            //}
             for (Category category : categoryList) {
                 listCategories.add(category.getName());
             }
             categoryMultiSelectList.setItems(listCategories);
             categoryMultiSelectList.select(listSelectedCategories);
-
+            layoutListBox.add(categoryMultiSelectList);
+            layoutListBox.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.START, JustifyContent.START,
+            Margin.Bottom.MEDIUM, Margin.Top.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);;
 
             Button add = new Button();
             add.setText("Ändern");
@@ -158,7 +164,7 @@ public class SpeisekarteDialog extends Dialog {
             layout3.add(cancle);
             layout3.add(add);
 
-            add(div, headerLayout, subtitle,layout,layout1,layout2, categoryMultiSelectList, layout3);
+            add(div, headerLayout, subtitle,layout,layout1,layout2, layoutListBox, layout3);
         }
     }
 

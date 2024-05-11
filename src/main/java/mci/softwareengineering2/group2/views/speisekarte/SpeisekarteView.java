@@ -134,6 +134,7 @@ public class SpeisekarteView extends HorizontalLayout {
     private void setTabsCategories(CategoryService categoryService, Tabs tabs) {
         Page<Category> allCategories = categoryService.list(Pageable.unpaged());
         List<Category> CategoryList = allCategories.get().toList();
+        tabs.add(new Tab("Alle"));
         for (Category category : CategoryList) {
             tabs.add(new Tab(category.getName()));
         }

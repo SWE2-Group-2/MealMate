@@ -19,7 +19,7 @@ public class Category extends AbstractEntity{
     @Id
     private Long id;
     private String name;
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "category_meal",
             joinColumns = @JoinColumn(name = "category_id"),

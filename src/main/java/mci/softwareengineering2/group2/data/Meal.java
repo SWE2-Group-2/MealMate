@@ -1,6 +1,7 @@
 package mci.softwareengineering2.group2.data;
 
 import com.vaadin.flow.component.template.Id;
+import java.util.ArrayList;
 
 import jakarta.persistence.*;
 
@@ -132,6 +133,8 @@ public class Meal extends AbstractEntity{
     }
 
     public List<Category> getCategory() {
+        if (category == null)
+            category = new ArrayList<>();
         return category;
     }
 

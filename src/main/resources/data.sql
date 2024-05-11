@@ -104,8 +104,8 @@ WHERE
     );
 
 --Meal Categories
-INSERT INTO category_table (id, name, version)
-    SELECT 0, 'Alle', 1 WHERE NOT EXISTS (SELECT * FROM category_table WHERE id = 0);
+--INSERT INTO category_table (id, name, version)
+--    SELECT 0, 'Alle', 1 WHERE NOT EXISTS (SELECT * FROM category_table WHERE id = 0);
 
 INSERT INTO category_table (id, name, version)
     SELECT 1, 'Österreichische Küche', 1 WHERE NOT EXISTS (SELECT * FROM category_table WHERE id = 1);
