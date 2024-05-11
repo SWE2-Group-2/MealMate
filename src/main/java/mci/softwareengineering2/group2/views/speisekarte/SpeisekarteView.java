@@ -106,15 +106,6 @@ public class SpeisekarteView extends HorizontalLayout {
 
                 // Add content based on selected tab name
                 if (tabName.equals("Alle")) {
-                    int j = 0;
-                    for (Meal meal : mealList) {
-                        if (j % 2 == 0) {
-                            layout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
-                        } else {
-                            layout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
-                        }
-                        j++;
-                    }
                     mainLayout.add(layout, layout1);
                     return;
                 }
