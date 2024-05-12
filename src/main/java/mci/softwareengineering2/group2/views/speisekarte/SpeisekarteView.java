@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.Uses;
@@ -29,6 +30,8 @@ import mci.softwareengineering2.group2.services.CartService;
 import mci.softwareengineering2.group2.services.MealService;
 import mci.softwareengineering2.group2.services.CategoryService;
 import mci.softwareengineering2.group2.views.MainLayout;
+import mci.softwareengineering2.group2.datarepository.MealSpecifications;
+import mci.softwareengineering2.group2.datarepository.CategorySpecifications;
 
 @PageTitle("Speisekarte")
 @Route(value = "speisekarte", layout = MainLayout.class)
@@ -40,17 +43,17 @@ public class SpeisekarteView extends HorizontalLayout {
     private Cart userCart = null;
     private CartDialog cartDialog = null;
 
-    public SpeisekarteView(MealService mealService,CartService cartService,CategoryService categoryService, AuthenticatedUser currentUser) {
+    public SpeisekarteView(MealService mealService,CartService cartService, AuthenticatedUser currentUser) {
 
         //Todo add the tabs like teh design shows it 
         Tabs tabs = new Tabs();
         tabs.setWidth("100%");
-        setTabsCategories(categoryService, tabs);
+        setTabsCategories(mealService, tabs);
         VerticalLayout tabsLayout = new VerticalLayout();
 
         //Page<Category> allCategories = categoryService.list(Pageable.unpaged());
         //List<Category> categoryList = allCategories.get().toList();
-        Page<Meal> allMeals = mealService.list(Pageable.unpaged());
+        Page<Meal> allMeals = mealService.list(Pageable.unpaged(), Specification.where(MealSpecifications.isDeleted(false)));
         List<Meal> mealList = allMeals.get().toList();
         Page<Cart> carts = cartService.list(Pageable.unpaged());
 
@@ -76,9 +79,9 @@ public class SpeisekarteView extends HorizontalLayout {
         for (Meal meal : mealList) {
 
             if (i % 2 == 0) {
-                layout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService, categoryService));
+                layout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
             } else {
-                layout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService, categoryService));
+                layout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
             }
             i++;
         }
@@ -109,18 +112,21 @@ public class SpeisekarteView extends HorizontalLayout {
                     mainLayout.add(layout, layout1);
                     return;
                 }
-                Category category = categoryService.list(Pageable.unpaged()).stream().filter(c -> c.getName().equals(tabName)).findFirst().get();
+                
+                Category category = mealService.listCategory(Pageable.unpaged(), Specification.where(CategorySpecifications.isName(tabName))).stream().findFirst().get();
                 List<Meal> meals = category.getMeals();
                 VerticalLayout categoryLayout = new VerticalLayout();
                 VerticalLayout categoryLayout1 = new VerticalLayout();
                 int j = 0;
                 for (Meal meal : meals) {
-                    if (j % 2 == 0) {
-                        categoryLayout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService, categoryService));
-                    } else {
-                        categoryLayout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService, categoryService));
+                    if (!meal.getDeleted()) {
+                        if (j % 2 == 0) {
+                            categoryLayout.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                        } else {
+                            categoryLayout1.add(new SpeisekarteComponent(meal,userCart,currentUser, mealService));
+                        }
+                        j++;
                     }
-                    j++;
                 }
                 mainLayout.add(categoryLayout, categoryLayout1);
             }
@@ -131,8 +137,8 @@ public class SpeisekarteView extends HorizontalLayout {
     }
 
     // Tabs
-    private void setTabsCategories(CategoryService categoryService, Tabs tabs) {
-        Page<Category> allCategories = categoryService.list(Pageable.unpaged());
+    private void setTabsCategories(MealService categoryService, Tabs tabs) {
+        Page<Category> allCategories = categoryService.listCategory(Pageable.unpaged());
         List<Category> CategoryList = allCategories.get().toList();
         tabs.add(new Tab("Alle"));
         for (Category category : CategoryList) {

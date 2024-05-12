@@ -75,12 +75,16 @@ public class Category extends AbstractEntity{
         return meals;
     }
 
+    /**
+     * Set the meals of a category
+     * @param meals the meals of a category
+     */
+    public void setMeals(List<Meal> meals) {
+        this.meals = meals;
+    }
+
     @Override
     public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", meals=" + meals +
-                '}';
+        return "";
     }
 }

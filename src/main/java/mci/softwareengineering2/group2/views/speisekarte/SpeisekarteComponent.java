@@ -42,7 +42,7 @@ public class SpeisekarteComponent extends ListItem {
         private SpeisekarteDialog delSpeisenDialog = new SpeisekarteDialog();
         private int amountValue = 1;
         private Span amount;
-        SpeisekarteComponent(Meal meal,Cart cart,AuthenticatedUser currentUser, MealService mealService, CategoryService categoryService) {
+        SpeisekarteComponent(Meal meal,Cart cart,AuthenticatedUser currentUser, MealService mealService) {
 
                 //addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
                 addClassNames(Background.CONTRAST_5, Display.FLEX, FlexDirection.COLUMN, AlignItems.START,
@@ -62,28 +62,28 @@ public class SpeisekarteComponent extends ListItem {
                 div.add(image);
                 
                 HorizontalLayout editLayout = new HorizontalLayout();
-                editLayout.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
+                editLayout.addClassNames(Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
                                 Margin.Top.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
                 // Als Admin wird ein Button zum Löschen und editieren der Speise hinzugefügt
                 if (currentUser.get().get().getRoles().contains(Role.ADMIN)) {
                         Button delete = new Button(new Icon(VaadinIcon.FILE_REMOVE));
                         delete.setText("Speise Löschen");
                         delete.addClickListener(event -> {
-                                delSpeisenDialog.delSpeisenDialog(meal, mealService, categoryService);
+                                delSpeisenDialog.delSpeisenDialog(meal, mealService);
                                 delSpeisenDialog.open();
                         });
 
                         Button edit = new Button(new Icon(VaadinIcon.EDIT));
                         edit.setText("Speise Bearbeiten");
                         edit.addClickListener(event -> {
-                                editSpeisenDialog.editSpeisenDialog(meal, mealService, categoryService);
+                                editSpeisenDialog.editSpeisenDialog(meal, mealService);
                                 editSpeisenDialog.open();
                         });
 
                         Button add = new Button(new Icon(VaadinIcon.FILE_ADD));
                         add.setText("Neue Speise");
                         add.addClickListener(event -> {
-                                addSpeisenDialog.addSpeisenDialog(mealService, categoryService);
+                                addSpeisenDialog.addSpeisenDialog(mealService);
                                 addSpeisenDialog.open();
                         });
                         editLayout.add(delete, edit, add);

@@ -1,6 +1,7 @@
 package mci.softwareengineering2.group2.data;
 
 import com.vaadin.flow.component.template.Id;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 
 import jakarta.persistence.*;
@@ -27,10 +28,11 @@ public class Meal extends AbstractEntity{
     private Menue menu;
     @ManyToMany(mappedBy = "meals")
     private List<Order> order;
-    @ManyToMany(mappedBy = "meals")
+    @ManyToMany(mappedBy = "meals", cascade = CascadeType.ALL)
     private List<Category> category;
     @Column(length = 500)
     private String picture;
+    private Boolean deleted = false;
 
     /**
      * Get the id of the meal
@@ -132,6 +134,7 @@ public class Meal extends AbstractEntity{
         return order;
     }
 
+    @Transactional
     public List<Category> getCategory() {
         if (category == null)
             category = new ArrayList<>();
@@ -162,6 +165,24 @@ public class Meal extends AbstractEntity{
     public void setPicture(String picture) {
         this.picture = picture;
     }
+
+    /**
+     * Get the deleted status of a meal
+     * @return the deleted status of a meal
+     */
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    /**
+     * Set the deleted status of a meal
+     * @param deleted the deleted status of a meal
+     */     
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted; 
+    }
+    
+
     @Override
     public String toString() {
         return "Meal [id=" + id + ", name=" + name + ", price=" + price + ", allergene=" + allergene + ", description="
