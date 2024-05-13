@@ -26,6 +26,32 @@ WHERE
             id = 1
     );
 
+INSERT INTO address_table(
+    id,
+    version,
+    city,
+    country,
+    postal_code,
+    state,
+    street
+)SELECT
+1,
+1,
+'Innsbruck',
+'Österreich',
+'6020',
+'Tirol',
+'Universitätsstraße 15'
+WHERE
+    NOT EXISTS (
+        SELECT
+            *
+        FROM
+            address_table
+        WHERE
+            id = 1
+    );
+
 INSERT INTO
     user_table (
         id,
@@ -34,7 +60,8 @@ INSERT INTO
         version,
         first_name,
         last_name,
-        important
+        important,
+        address_id
     )
 SELECT
     2,
@@ -43,7 +70,8 @@ SELECT
     2,
     'User',
     'User',
-    TRUE
+    TRUE,
+    1
 WHERE
     NOT EXISTS (
         SELECT

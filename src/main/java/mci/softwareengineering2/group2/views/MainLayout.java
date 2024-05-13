@@ -8,7 +8,8 @@ import mci.softwareengineering2.group2.views.accountmanagement.AccountManipulati
 import mci.softwareengineering2.group2.views.bestellungen.BestellungenView;
 import mci.softwareengineering2.group2.views.dashboard.DashboardView;
 import mci.softwareengineering2.group2.views.speisekarte.SpeisekarteView;
-import mci.softwareengineering2.group2.views.warenkorb.WarenkorbView;
+
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -25,7 +26,6 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
@@ -37,7 +37,6 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 /**
  * The main view is a top-level placeholder for other views.
  */
-@Route(value = "")
 @PermitAll
 public class MainLayout extends AppLayout {
 
@@ -57,6 +56,8 @@ public class MainLayout extends AppLayout {
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
+
+        UI.getCurrent().navigate(SpeisekarteView.class);
     }
 
     private void addHeaderContent() {
@@ -87,12 +88,6 @@ public class MainLayout extends AppLayout {
                     LineAwesomeIcon.UTENSIL_SPOON_SOLID.create()));
 
         }
-
-        if (accessChecker.hasAccess(WarenkorbView.class)) {
-            nav.addItem(new SideNavItem("Warenkorb", WarenkorbView.class, LineAwesomeIcon.CREDIT_CARD.create()));
-
-        }
-
 
         if (accessChecker.hasAccess(BestellungenView.class)) {
             nav.addItem(new SideNavItem("Bestellungen", BestellungenView.class, LineAwesomeIcon.FILTER_SOLID.create()));

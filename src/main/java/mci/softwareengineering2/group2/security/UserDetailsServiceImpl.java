@@ -10,7 +10,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +29,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("No user present with username: " + username);
         } else {
-
-            String encodedPw=new BCryptPasswordEncoder().encode("admin");
-            System.out.println(encodedPw);
-            // Password p = new Password(encodedPw);
-
             org.springframework.security.core.userdetails.User test = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getHashedPassword(),
             getAuthorities(user));
             return test;

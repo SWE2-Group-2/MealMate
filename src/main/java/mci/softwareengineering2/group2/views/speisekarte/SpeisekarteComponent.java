@@ -7,10 +7,10 @@ import com.vaadin.flow.component.html.ListItem;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.theme.lumo.LumoUtility.AlignItems;
 import com.vaadin.flow.theme.lumo.LumoUtility.Background;
 import com.vaadin.flow.theme.lumo.LumoUtility.BorderRadius;
@@ -29,14 +29,13 @@ import mci.softwareengineering2.group2.data.Cart;
 import mci.softwareengineering2.group2.data.Meal;
 import mci.softwareengineering2.group2.data.Role;
 import mci.softwareengineering2.group2.security.AuthenticatedUser;
-import mci.softwareengineering2.group2.services.CategoryService;
 import mci.softwareengineering2.group2.services.MealService;
 
 public class SpeisekarteComponent extends ListItem {
 
         private final String defaultString = "https://imgs.search.brave.com/Go2Gk8Q0PVTkq9i3e6Vti9UHhjMx_rdrlzIG6GmzZUg/rs:fit:500:0:0/g:ce/aHR0cHM6Ly90My5m/dGNkbi5uZXQvanBn/LzA0LzYwLzAxLzM2/LzM2MF9GXzQ2MDAx/MzYyMl82eEY4dU42/dWJNdkx4MHRBSkVD/QkhmS1BvTk9SNWNS/YS5qcGc";
-        private final String defaultHeightDiv = "150px";
-        private final String defaultWidthDiv = "650px";
+        // private final String defaultHeightDiv = "150px";
+        // private final String defaultWidthDiv = "650px";
         private SpeisekarteDialog editSpeisenDialog = new SpeisekarteDialog();
         private SpeisekarteDialog addSpeisenDialog = new SpeisekarteDialog();
         private SpeisekarteDialog delSpeisenDialog = new SpeisekarteDialog();
@@ -52,8 +51,8 @@ public class SpeisekarteComponent extends ListItem {
                 Div div = new Div();
                 div.addClassNames(Background.CONTRAST_5, Display.FLEX, AlignItems.CENTER, JustifyContent.CENTER,
                                 Margin.Bottom.MEDIUM, Overflow.HIDDEN, BorderRadius.MEDIUM, Width.FULL);
-                div.setHeight(defaultHeightDiv);
-                div.setWidth(defaultWidthDiv);
+                div.setHeight("150px");
+                div.setWidth("100%");
 
                 Image image = new Image();
                 image.setWidth("100%");
@@ -87,7 +86,7 @@ public class SpeisekarteComponent extends ListItem {
                                 addSpeisenDialog.open();
                         });
                         editLayout.add(delete, edit, add);
-                        editLayout.setWidth(defaultWidthDiv);
+                        editLayout.setWidth("100%");
                         editLayout.setAlignItems(Alignment.STRETCH);
                 }
                 
@@ -134,7 +133,12 @@ public class SpeisekarteComponent extends ListItem {
                 Button add = new Button();
                 add.setText("Hinzufügen");
                 add.addClickListener(event -> {
-                        cart.getMeals().add(meal);
+                        for (int i = 0; i < amountValue; i++) {
+                                Notification notification = Notification
+                                                .show(String.format("%s zum Warenkorb hinzugefügt",meal.getName()));
+                                notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                                cart.getMeals().add(meal);
+                        }
                 });
                 if (!currentUser.get().get().getRoles().contains(Role.ADMIN)) {
                         layout.add(decreas);

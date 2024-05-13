@@ -4,9 +4,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.board.Board;
 import com.vaadin.flow.component.charts.Chart;
 import com.vaadin.flow.component.charts.model.*;
-import com.vaadin.flow.component.grid.ColumnTextAlign;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Main;
 import com.vaadin.flow.component.html.Span;
@@ -16,7 +13,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -27,12 +23,8 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import com.vaadin.flow.theme.lumo.LumoUtility.Padding;
 import com.vaadin.flow.theme.lumo.LumoUtility.TextColor;
 
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import mci.softwareengineering2.group2.views.MainLayout;
-import mci.softwareengineering2.group2.views.dashboard.ServiceHealth.Status;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -91,7 +83,6 @@ public class DashboardView extends Main {
         return layout;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     private Component createViewEvents() {
         // Header
         Select<String> yearSelect = new Select<>();
@@ -201,28 +192,28 @@ public class DashboardView extends Main {
         return header;
     }
 
-    private String getStatusDisplayName(ServiceHealth serviceHealth) {
-        Status status = serviceHealth.getStatus();
-        if (status == Status.OK) {
-            return "Ok";
-        } else if (status == Status.FAILING) {
-            return "Failing";
-        } else if (status == Status.EXCELLENT) {
-            return "Excellent";
-        } else {
-            return status.toString();
-        }
-    }
+    // private String getStatusDisplayName(ServiceHealth serviceHealth) {
+    //     Status status = serviceHealth.getStatus();
+    //     if (status == Status.OK) {
+    //         return "Ok";
+    //     } else if (status == Status.FAILING) {
+    //         return "Failing";
+    //     } else if (status == Status.EXCELLENT) {
+    //         return "Excellent";
+    //     } else {
+    //         return status.toString();
+    //     }
+    // }
 
-    private String getStatusTheme(ServiceHealth serviceHealth) {
-        Status status = serviceHealth.getStatus();
-        String theme = "badge primary small";
-        if (status == Status.EXCELLENT) {
-            theme += " success";
-        } else if (status == Status.FAILING) {
-            theme += " error";
-        }
-        return theme;
-    }
+    // private String getStatusTheme(ServiceHealth serviceHealth) {
+    //     Status status = serviceHealth.getStatus();
+    //     String theme = "badge primary small";
+    //     if (status == Status.EXCELLENT) {
+    //         theme += " success";
+    //     } else if (status == Status.FAILING) {
+    //         theme += " error";
+    //     }
+    //     return theme;
+    // }
 
 }
