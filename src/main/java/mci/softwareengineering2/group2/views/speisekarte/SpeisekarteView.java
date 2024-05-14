@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.icon.Icon;
@@ -36,7 +35,7 @@ import mci.softwareengineering2.group2.datarepository.MealSpecifications;
 import mci.softwareengineering2.group2.datarepository.CategorySpecifications;
 
 @PageTitle("Speisekarte")
-@Route(value = "speisekarte", layout = MainLayout.class)
+@Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PermitAll
 @Uses(Icon.class)
@@ -68,7 +67,7 @@ public class SpeisekarteView extends HorizontalLayout {
 
         VerticalLayout layout = new VerticalLayout();
 
-        if (!currentUser.get().get().getRoles().contains(Role.ADMIN)) {
+        if (currentUser.get().get().getRoles().contains(Role.USER)) {
             Button cartButton = new Button(VaadinIcon.CART_O.create());
             cartButton.setText("Warenkorb");
 

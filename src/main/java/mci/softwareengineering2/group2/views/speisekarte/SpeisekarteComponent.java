@@ -108,38 +108,41 @@ public class SpeisekarteComponent extends ListItem {
 
                 HorizontalLayout layout = new HorizontalLayout();
 
-                Button decreas = new Button();
-                decreas.setText("-");
-                decreas.addClickListener(e -> {
-                        if(amountValue > 1){
-                                amountValue--;
-                        }
-                        amount.setText(""+amountValue);
-                });
+                if (!currentUser.get().get().getRoles().contains(Role.SUPPLIER)) {
+                        Button decreas = new Button();
+                        decreas.setText("-");
+                        decreas.addClickListener(e -> {
+                                if (amountValue > 1) {
+                                        amountValue--;
+                                }
+                                amount.setText("" + amountValue);
+                        });
 
-                amount = new Span();
-                amount.getElement().getStyle().set("font-size", "20px");
-                amount.getElement().getStyle().set("margin-top", "5px");
-                amount.setText(""+amountValue);
-                Button increas = new Button();
-                increas.setText("+");
-                increas.addClickListener(e -> {
-                        if(amountValue < 10){
-                                amountValue++;
-                        }
-                        amount.setText(""+amountValue);
-                });
+                        amount = new Span();
+                        amount.getElement().getStyle().set("font-size", "20px");
+                        amount.getElement().getStyle().set("margin-top", "5px");
+                        amount.setText("" + amountValue);
+                        Button increas = new Button();
+                        increas.setText("+");
+                        increas.addClickListener(e -> {
+                                if (amountValue < 10) {
+                                        amountValue++;
+                                }
+                                amount.setText("" + amountValue);
+                        });
 
-                Button add = new Button();
-                add.setText("Hinzufügen");
-                add.addClickListener(event -> {
-                        for (int i = 0; i < amountValue; i++) {
-                                Notification notification = Notification
-                                                .show(String.format("%s zum Warenkorb hinzugefügt",meal.getName()));
-                                notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                                cart.getMeals().add(meal);
-                        }
-                });
+                        Button add = new Button();
+                        add.setText("Hinzufügen");
+                        add.addClickListener(event -> {
+                                for (int i = 0; i < amountValue; i++) {
+                                        Notification notification = Notification
+                                                        .show(String.format("%s zum Warenkorb hinzugefügt",
+                                                                        meal.getName()));
+                                        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                                        cart.getMeals().add(meal);
+                                }
+                        });
+                
                 if (!currentUser.get().get().getRoles().contains(Role.ADMIN)) {
                         layout.add(decreas);
                         layout.add(amount);
@@ -147,6 +150,7 @@ public class SpeisekarteComponent extends ListItem {
                         layout.add(new Span());
                         layout.add(add);
                 }
+        }
 
                 add(div, headerLayout, subtitle,layout,editLayout);
         }

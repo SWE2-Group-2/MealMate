@@ -8,8 +8,8 @@ import mci.softwareengineering2.group2.views.accountmanagement.AccountManipulati
 import mci.softwareengineering2.group2.views.bestellungen.BestellungenView;
 import mci.softwareengineering2.group2.views.dashboard.DashboardView;
 import mci.softwareengineering2.group2.views.speisekarte.SpeisekarteView;
+import mci.softwareengineering2.group2.views.supplier.SupplyView;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -32,6 +32,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import jakarta.annotation.security.PermitAll;
 
 import java.util.Optional;
+
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
@@ -56,8 +57,6 @@ public class MainLayout extends AppLayout {
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
-
-        UI.getCurrent().navigate(SpeisekarteView.class);
     }
 
     private void addHeaderContent() {
@@ -83,21 +82,32 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        if (accessChecker.hasAccess(SpeisekarteView.class)) {
-            nav.addItem(new SideNavItem("Speisekarte", SpeisekarteView.class,
-                    LineAwesomeIcon.UTENSIL_SPOON_SOLID.create()));
+        if (authenticatedUser.get().get().getRoles().contains(mci.softwareengineering2.group2.data.Role.SUPPLIER)) {
+            if (accessChecker.hasAccess(SupplyView.class)) {
+                nav.addItem(new SideNavItem("Lieferungen", SupplyView.class,
+                        LineAwesomeIcon.UTENSIL_SPOON_SOLID.create()));
 
+                        
+            }
+        } else {
+
+            if (accessChecker.hasAccess(SpeisekarteView.class)) {
+                nav.addItem(new SideNavItem("Speisekarte", SpeisekarteView.class,
+                        LineAwesomeIcon.UTENSIL_SPOON_SOLID.create()));
+            }
+
+            if (accessChecker.hasAccess(BestellungenView.class)) {
+                nav.addItem(
+                        new SideNavItem("Bestellungen", BestellungenView.class, LineAwesomeIcon.FILTER_SOLID.create()));
+            }
+
+            if (accessChecker.hasAccess(DashboardView.class)) {
+                nav.addItem(new SideNavItem("Report", DashboardView.class,
+                        LineAwesomeIcon.CHART_LINE_SOLID.create()));
+
+            }
         }
 
-        if (accessChecker.hasAccess(BestellungenView.class)) {
-            nav.addItem(new SideNavItem("Bestellungen", BestellungenView.class, LineAwesomeIcon.FILTER_SOLID.create()));
-        }
-
-        if (accessChecker.hasAccess(DashboardView.class)) {
-            nav.addItem(new SideNavItem("Report", DashboardView.class,
-                    LineAwesomeIcon.CHART_LINE_SOLID.create()));
-
-        }
         return nav;
     }
 

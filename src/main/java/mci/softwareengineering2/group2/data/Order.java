@@ -32,6 +32,9 @@ public class Order extends AbstractEntity{
     private User user;
     @Enumerated(EnumType.STRING)
     private OrderState state;
+    @ManyToOne
+    @JoinColumn(name = "supplier_id")
+    private User supplier;
 
     /**
      * Get the id of an order
@@ -151,9 +154,55 @@ public class Order extends AbstractEntity{
     public void setState(OrderState state) {
         this.state = state;
     }
+
+
+    public String getMealString(){
+
+        String mealString = "";
+
+        if(meals != null && !meals.isEmpty()){
+            boolean isFirst = true;
+            for (Meal meal : meals) {
+                if (isFirst) {
+                    mealString = meal.getName();
+                    isFirst = false;
+                }else{
+                    mealString = String.format("%s,%s", mealString,meal.getName());
+                }
+                
+            }
+        }
+        return mealString;
+    }
+
+    public float getOrderSum(){
+
+        float sum = 0;
+
+        if(meals != null && !meals.isEmpty()){
+            for (Meal meal : meals) {
+                    sum = sum + meal.getPrice();
+                
+            }
+        }
+        return sum;
+    }
+
     @Override
     public String toString() {
         return "Order [id=" + id + ", startDate=" + startDate + ", endDate=" + endDate + ", meals=" + meals + ", note="
                 + note + ", user=" + user + ", state=" + state + "]";
     }
+
+    public User getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(User supplier) {
+        this.supplier = supplier;
+    }
+
+    public Long getSupplierId(){
+        return supplier != null ? supplier.getId() : 0;
+    } 
 }

@@ -83,6 +83,34 @@ WHERE
     );
 
 INSERT INTO
+    user_table (
+        id,
+        username,
+        hashed_password,
+        version,
+        first_name,
+        last_name,
+        important
+    )
+SELECT
+    3,
+    'sup',
+    '$2a$12$GIRymlzWRFI82IQtGu.lmOXx3yrx/R.GGUGoxb0CGsAozZKaDnh7W',
+    2,
+    'Lieferant',
+    'Lieferant',
+    TRUE
+WHERE
+    NOT EXISTS (
+        SELECT
+            *
+        FROM
+            user_table
+        WHERE
+            id = 3
+    );
+
+INSERT INTO
     user_roles (user_id, roles)
 SELECT
     1,
@@ -110,6 +138,21 @@ WHERE
             user_roles
         WHERE
             user_id = 2
+    );
+
+INSERT INTO
+    user_roles (user_id, roles)
+SELECT
+    3,
+    'SUPPLIER'
+WHERE
+    NOT EXISTS (
+        SELECT
+            *
+        FROM
+            user_roles
+        WHERE
+            user_id = 3
     );
 
 
@@ -354,5 +397,3 @@ INSERT INTO order_meal (order_id, meal_id) VALUES (5, 1);
 INSERT INTO order_meal (order_id, meal_id) VALUES (5, 2);
 INSERT INTO order_meal (order_id, meal_id) VALUES (6, 1);
 INSERT INTO order_meal (order_id, meal_id) VALUES (6, 2);
-
-

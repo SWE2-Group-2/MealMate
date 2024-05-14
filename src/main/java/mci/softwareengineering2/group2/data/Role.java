@@ -6,5 +6,5 @@ package mci.softwareengineering2.group2.data;
  * @since 08.05.2024
  */
 public enum Role {
-    USER, ADMIN;
+    USER,ADMIN,SUPPLIER;
 }

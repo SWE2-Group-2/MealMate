@@ -15,7 +15,7 @@ import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import mci.softwareengineering2.group2.data.Meal;
 import mci.softwareengineering2.group2.data.Order;
 import mci.softwareengineering2.group2.data.OrderState;
@@ -24,7 +24,7 @@ import mci.softwareengineering2.group2.security.AuthenticatedUser;
 import mci.softwareengineering2.group2.services.OrderService;
 import mci.softwareengineering2.group2.views.MainLayout;
 import org.springframework.data.domain.PageRequest;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +32,7 @@ import java.util.stream.Stream;
 
 @PageTitle("Bestellungen")
 @Route(value = "bestellungen", layout = MainLayout.class)
-@PermitAll
+@RolesAllowed({"ADMIN","USER"})
 @Uses(Icon.class)
 public class BestellungenView extends Div {
 
@@ -125,7 +125,17 @@ public class BestellungenView extends Div {
 
     private void showEditDialog(Order order) {
         Dialog dialog = new Dialog();
-        ComboBox<OrderState> stateComboBox = new ComboBox<>("Status ändern", OrderState.values());
+        dialog.setWidth("40%");
+
+        ArrayList<OrderState> availableStates  = new ArrayList<OrderState>();
+        for(OrderState orderstate : OrderState.values()){
+            if(orderstate != OrderState.ORDER_DONE){
+                availableStates.add(orderstate);
+            }
+        }
+
+        ComboBox<OrderState> stateComboBox = new ComboBox<>("Status ändern", availableStates);
+        stateComboBox.setWidth("80%");
         stateComboBox.setValue(order.getState());
         Button saveButton = new Button("Speichern", e -> {
             OrderState oldState = order.getState();
