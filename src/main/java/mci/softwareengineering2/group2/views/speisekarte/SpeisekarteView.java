@@ -36,7 +36,7 @@ import mci.softwareengineering2.group2.datarepository.MealSpecifications;
 import mci.softwareengineering2.group2.datarepository.CategorySpecifications;
 
 @PageTitle("Speisekarte")
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "speisekarte", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @PermitAll
 @Uses(Icon.class)
