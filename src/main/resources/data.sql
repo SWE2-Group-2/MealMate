@@ -352,5 +352,7 @@ INSERT INTO order_meal (order_id, meal_id) VALUES (4, 1);
 INSERT INTO order_meal (order_id, meal_id) VALUES (4, 2);
 INSERT INTO order_meal (order_id, meal_id) VALUES (5, 1);
 INSERT INTO order_meal (order_id, meal_id) VALUES (5, 2);
+INSERT INTO order_meal (order_id, meal_id) VALUES (6, 1);
+INSERT INTO order_meal (order_id, meal_id) VALUES (6, 2);
 
 

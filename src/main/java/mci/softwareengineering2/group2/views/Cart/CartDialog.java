@@ -50,7 +50,7 @@ public class CartDialog extends Dialog {
         header.setAlignItems(Alignment.CENTER);
         header.getThemeList().clear();
 
-        Button create = new Button("Bestellung anschicken");
+        Button create = new Button("Bestellung abschicken");
         create.setEnabled(true);
         create.addClickListener(event -> {
 
@@ -60,7 +60,7 @@ public class CartDialog extends Dialog {
             currentDialog.close();
         });
 
-        Button delete = new Button("Delete");
+        Button delete = new Button("Löschen");
         delete.setEnabled(false);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
         delete.getStyle().set("margin-inline-start", "auto");
