@@ -134,6 +134,13 @@ public class SpeisekarteDialog extends Dialog {
                     speisenPreis.setErrorMessage("Bitte geben Sie einen Preis ein");
                     valid = false;
                 }
+                try {
+                    Float.parseFloat(speisenPreis.getValue());
+                } catch(NumberFormatException e) {
+                    speisenPreis.setInvalid(true);
+                    speisenPreis.setErrorMessage("Bitte geben Sie ein Zahl mit . als Preis ein");
+                    valid = false;
+                }
                 if (valid) {
                     meal.setName(speisenName.getValue());
                     meal.setPrice(Float.parseFloat(speisenPreis.getValue()));
@@ -257,6 +264,13 @@ public class SpeisekarteDialog extends Dialog {
             if (speisenPreis.getValue().isEmpty()) {
                 speisenPreis.setInvalid(true);
                 speisenPreis.setErrorMessage("Bitte geben Sie einen Preis ein");
+                valid = false;
+            }
+            try {
+                Float.parseFloat(speisenPreis.getValue());
+            } catch(NumberFormatException e) {
+                speisenPreis.setInvalid(true);
+                speisenPreis.setErrorMessage("Bitte geben Sie ausschließlich eine Zahl mit . als Komma ein");
                 valid = false;
             }
             if (valid) {
