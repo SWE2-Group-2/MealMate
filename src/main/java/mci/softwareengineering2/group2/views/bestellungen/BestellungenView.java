@@ -78,10 +78,12 @@ public class BestellungenView extends Div {
                     .map(entry -> entry.getKey().getName() + " x " + entry.getValue())
                     .collect(Collectors.joining(", "));
         }).setHeader("Speisen/Getränke").setAutoWidth(true);
-        grid.addColumn(order -> order.getMeals().stream()
-                        .mapToDouble(meal -> meal.getPrice())
-                        .sum())
-                .setHeader("Gesamtpreis").setAutoWidth(true);
+        grid.addColumn(order -> {
+                    double sum = order.getMeals().stream()
+                            .mapToDouble(meal -> meal.getPrice())
+                            .sum();
+                    return String.format("%.2f €", sum);
+                }).setHeader("Gesamtpreis").setAutoWidth(true);
         grid.addColumn(order -> order.getState().toString()).setHeader("Status").setAutoWidth(true);
 
         if (currentUser.get().isPresent() && currentUser.get().get().getRoles().contains(Role.ADMIN)){
