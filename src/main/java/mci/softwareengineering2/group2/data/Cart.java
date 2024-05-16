@@ -11,7 +11,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "cart_name")
+@Table(name = "cart_table")
 /**
  * Represent the cart of an user
  * 

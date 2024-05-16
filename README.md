@@ -4,6 +4,7 @@
   - [Hardware-Voraussetzungen](#hardware-voraussetzungen)
   - [Inbetriebnahme des Vaadin-Server](#inbetriebnahme-des-vaadin-server)
   - [Aufbau der Datenbank](#aufbau-der-datenbank)
+  - [Default User](#default-user)
 
 ![logo](doc_img/logo.jpg)
 > MealMate erleichter den Bestellprozess für Benutzer:innen und Restaurantbesitzer:innen. Mit dieser Applikation können Restaurants ihre Speisekarte erstellen und bearbeiten und dem Kund:innen zur verfügungsellen. Die Benutzer:innen können wiederum aus den Speisekarten auswählen und Bestellungen an das Restaurant übermitteln.
@@ -26,3 +27,12 @@ java -jar target/mealmate-1.0-SNAPSHOT.jar
 ## Aufbau der Datenbank
 
 ![DatabaseDiagramm](doc_img/Database_Diagramm.png)
+
+## Default User
+> Als default stehen der Anwendung drei User in den jeweiligen Rollen zur Verfügung
+
+- USER --> user:user
+- ADMIN --> admin:admin
+- SUPPLIER --> sup:user
+
+> nach Inbetriebnahme der Anwendung sollten diese user immer abgeändert werden.
