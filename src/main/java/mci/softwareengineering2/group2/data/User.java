@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 @Entity
 @Table(name = "user_table")
 public class User extends AbstractEntity {
@@ -254,6 +256,35 @@ public class User extends AbstractEntity {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    @Transient
+    public boolean isUserCorrect(){
+
+        boolean isUsername = username != null && username.length() > 0;
+        boolean isPassword = hashedPassword != null && hashedPassword.length() > 0;
+
+        return isUsername && isPassword;
+    }
+
+    /**
+     * Check if the clear text password is the same as the db user
+     * @param password password in clear test
+     * @return true/false
+     */
+    @Transient
+    public boolean checkPassword(String password){
+        return new BCryptPasswordEncoder().matches(password,encodePassword(password));
+    }
+
+    /**
+     * Get the hashed password 
+     * @param password password in clear text
+     * @return the encoded password
+     */
+    @Transient
+    public String encodePassword(String password){
+        return new BCryptPasswordEncoder().encode(password);
     }
 
     @Override

@@ -181,6 +181,20 @@ public class Meal extends AbstractEntity{
         this.deleted = deleted; 
     }
     
+    /**
+     * Checks if all nessesury data for the meal is included
+     * 
+     * @return true/false
+     */
+    @Transient
+    public boolean isMealCorrect() {
+
+        boolean isName = name != null && name.length() > 0;
+        boolean isPrice = price > 0;
+
+        return isName && isPrice;
+
+    }
 
     @Override
     public String toString() {

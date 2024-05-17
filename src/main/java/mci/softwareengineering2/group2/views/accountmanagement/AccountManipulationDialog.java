@@ -318,6 +318,10 @@ public class AccountManipulationDialog extends Dialog {
 
             user.setAddress(address);
 
+            if(!user.isUserCorrect()){
+                return false;
+            }
+
             addressService.update(address);
             userService.update(user);
 

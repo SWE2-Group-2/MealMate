@@ -107,4 +107,16 @@ public class Address extends AbstractEntity {
         return "Address [id=" + id + ", street=" + street + ", postalCode=" + postalCode + ", city=" + city + ", state="
                 + state + ", country=" + country + "]";
     }
+
+    public boolean isValid(){
+
+        boolean isStreet = street != null && street.length() > 0;
+        boolean isPostalCode = postalCode != null && postalCode.length() > 0;
+        boolean isCity = city != null && city.length() > 0;
+        boolean isState = state != null && state.length() > 0;
+        boolean isSCountry = country != null && country.length() > 0;
+
+        return isStreet && isPostalCode && isCity && isState && isSCountry;
+
+    }
 }

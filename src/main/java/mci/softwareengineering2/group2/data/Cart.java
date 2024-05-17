@@ -100,4 +100,15 @@ public class Cart extends AbstractEntity {
     public String toString() {
         return "Cart [id=" + id + ", meals=" + meals + ", user=" + user + "]";
     }
+
+    /**
+     * Implemented to get the toatal amoun of meals to show it on the cart button
+     * @return
+     */
+    public int getSumMealAmount (){
+        if (meals != null && meals.size() > 0){
+            return meals.size();
+        }
+        return 0;
+    }
 }
